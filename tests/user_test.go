@@ -10,6 +10,7 @@ import (
 	_ "github.com/boolow5/iWeydi/routers"
 
 	"github.com/astaxie/beego"
+	bolow "github.com/boolow5/bolow/strings"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -36,8 +37,10 @@ func TestUserAPIGetIsAvailable(t *testing.T) {
 			So(w.Body.Len(), ShouldBeGreaterThan, 0)
 		})
 		Convey("The Result Should Be in JSON format", func() {
-			So(w.Body.String(), ShouldStartWith, `{
-	"user":`)
+			body_str, err := bolow.TrimNewLines(w.Body.Bytes())
+			if err == nil {
+				So(body_str, ShouldStartWith, `{  "user":`)
+			}
 		})
 	})
 }
