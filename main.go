@@ -25,6 +25,8 @@ func main() {
 			fmt.Println(err)
 		}
 	*/
+	beego.ErrorHandler("404", NotFoundHandler)
+	beego.ErrorHandler("500", InternalErrorHandler)
 
 	beego.Run()
 }
