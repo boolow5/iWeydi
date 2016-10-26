@@ -32,11 +32,10 @@ func InitEnv() {
 	//orm.RegisterDriver("mysql", orm.DRMySQL)
 	orm.RegisterDriver("postgres", orm.DRPostgres)
 	//orm.RegisterDataBase("default", "mysql", dbLink, maxIdleConn, maxOpenConn)
-
-	orm.RegisterDataBase("default", "postgres", fmt.Sprintf("postgres://%s:%s@%s/%s?port=%i&sslmode=disable",
-		DATABASE_USER, DATABASE_PASS, DATABASE_HOST_NAME, DATABASE_PORT, DATABASE_NAME))
+	//////////////////////////////// postgres://user:password@host/database?port=port_number \\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+	db_source_string := fmt.Sprintf("postgres://%s:%s@%s/%s?port=%s", DATABASE_USER, DATABASE_PASS, DATABASE_HOST_NAME, DATABASE_NAME, DATABASE_PORT)
+	orm.RegisterDataBase("default", "postgres", db_source_string)
 	//orm.RegisterDataBase("default", "postgres", "user="+DATABASE_USER+" password="+DATABASE_PASS+" dbname="+DATABASE_NAME+" sslmode=disable")
-
 	if RUN_MODE == "dev" {
 		orm.Debug = true
 	} else {
