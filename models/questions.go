@@ -7,9 +7,10 @@ type Question struct {
 	CreatedAt time.Time `json:"created_at" orm:"auto_now_add;type(datetime)"`
 	UpdatedAt time.Time `json:"updated_at" orm:"auto_now;type(datetime)"`
 
-	Text        string `json:"text" orm:"size(300)"`
-	Description string `json:"description" orm:"null;size(600)"`
-	Author      *User  `json:"author" orm:"rel(fk);on_delete(cascade)"`
+	Text        string            `json:"text" orm:"size(300)"`
+	Description string            `json:"description" orm:"null;size(600)"`
+	Author      *User             `json:"author" orm:"rel(fk);on_delete(cascade)"`
+	Comments    []QuestionComment `json:"comments" orm:"-"`
 }
 
 func (q *Question) TableName() string {
