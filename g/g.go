@@ -7,6 +7,9 @@ import (
 	"github.com/astaxie/beego/orm"
 	"github.com/boolow5/iWeydi/models"
 	_ "github.com/lib/pq"
+
+	"github.com/astaxie/beego/session"
+	_ "github.com/astaxie/beego/session/redis"
 )
 
 var (
@@ -20,6 +23,10 @@ var (
 )
 
 func InitEnv() {
+
+	globalSessions, _ := session.NewManager("redis", `{"cookieName":"gosessionid","gclifetime":3600,"ProviderConfig":"127.0.0.1:6379"}`)
+	go globalSessions.GC()
+
 	//GET DATABASE INFO FROM ENVIRONMENT VARIABLES
 	DATABASE_HOST_NAME = os.Getenv("DATABASE_HOST_NAME")
 	DATABASE_NAME = os.Getenv("DATABASE_NAME")
@@ -34,6 +41,8 @@ func InitEnv() {
 	//orm.RegisterDataBase("default", "mysql", dbLink, maxIdleConn, maxOpenConn)
 	//////////////////////////////// postgres://user:password@host/database?port=port_number \\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 	db_source_string := fmt.Sprintf("postgres://%s:%s@%s/%s?port=%s", DATABASE_USER, DATABASE_PASS, DATABASE_HOST_NAME, DATABASE_NAME, DATABASE_PORT)
+	//session_db_str := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=verify-full", DATABASE_USER, DATABASE_PASS, DATABASE_HOST_NAME, DATABASE_NAME)
+
 	orm.RegisterDataBase("default", "postgres", db_source_string)
 	//orm.RegisterDataBase("default", "postgres", "user="+DATABASE_USER+" password="+DATABASE_PASS+" dbname="+DATABASE_NAME+" sslmode=disable")
 	if RUN_MODE == "dev" {
@@ -46,6 +55,7 @@ func InitEnv() {
 	new(models.Topic), new(models.Feed), new(models.Follower), new(models.Like))*/
 	orm.RegisterModelWithPrefix("weydi_", new(models.User), new(models.Profile), new(models.Question),
 		new(models.Answer), new(models.Topic), new(models.Feed), new(models.Follower), new(models.Like),
-		new(models.QuestionComment), new(models.AnswerComment))
+		new(models.QuestionComment), new(models.AnswerComment), new(models.Language))
 	//orm.RunCommand()
+
 }
