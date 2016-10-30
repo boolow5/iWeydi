@@ -17,10 +17,11 @@ type Profile struct {
 	User      *User  `json:"user" orm:"reverse(one)"`
 	AvatarUrl string `json:"profile_picture" orm:"null"`
 
-	Likes         int     `Json:"topics_you_like" orm:"default(0)"`
-	AnswerCount   int     `json:"answer_count" orm:"default(0)"`
-	QuestionCount int     `json:"question_count" orm:"default(0)"`
-	PersonalFeed  []*Feed `json:"-" orm:"-"`
+	Likes         int         `Json:"topics_you_like" orm:"default(0)"`
+	AnswerCount   int         `json:"answer_count" orm:"default(0)"`
+	QuestionCount int         `json:"question_count" orm:"default(0)"`
+	Languages     []*Language `json:"languages" orm:"-"`
+	PersonalFeed  []*Feed     `json:"feed_list" orm:"-"`
 }
 
 func (p *Profile) TableName() string {
