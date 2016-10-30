@@ -2,63 +2,69 @@ package controllers
 
 import (
 	"encoding/json"
-	"strconv"
+	"fmt"
+	"strings"
 
-	"github.com/astaxie/beego"
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/astaxie/beego/orm"
 	"github.com/boolow5/iWeydi/models"
 )
 
-type UserAPIController struct {
-	beego.Controller
+type UserController struct {
+	BaseController
 }
 
-func (this *UserAPIController) GetOne() {
-	id, err := strconv.Atoi(this.Ctx.Input.Param(":id"))
-	if err != nil {
-		this.Data["json"] = map[string]interface{}{"error": "Invalid user ID format", "err": err}
-		this.ServeJSON()
-		return
+func (this *UserController) GetProfile() {
+	this.Data["Title"] = "profile"
+	SetupCommonLayout("pages/user/profile.tpl", &this.Controller)
+
+}
+func (this *UserController) Register() {
+	if IsAuthenticated(&this.Controller) {
+		this.Redirect("/", 302)
 	}
-	o := orm.NewOrm()
-	user := models.User{Id: id}
-	err = o.Read(&user)
-	profile := models.Profile{Id: id}
-	err = o.Read(&profile)
-	user.Profile = &profile
-	this.Data["json"] = map[string]interface{}{"user": user, "err": err}
-	this.ServeJSON()
+	this.Data["Title"] = "register"
+	SetupCommonLayout("pages/user/register1.tpl", &this.Controller)
 }
 
-func (this *UserAPIController) Get() {
-	o := orm.NewOrm()
-	var user models.User
-	var users []models.User
-	num, err := o.QueryTable(user).All(&users)
-	this.Data["json"] = map[string]interface{}{"users": users, "num": num, "err": err}
-	this.ServeJSON()
-}
+func (this *UserController) PostUser() {
+	if IsAuthenticated(&this.Controller) {
+		this.Redirect("/", 302)
+	}
 
-func (this *UserAPIController) Post() {
 	//decode request body to user
+	fmt.Println("Registering new user")
 	form := map[string]interface{}{}
 	err := json.NewDecoder(this.Ctx.Request.Body).Decode(&form)
 	if err != nil {
-		this.Data["json"] = map[string]interface{}{"error": "Submitted an invalid data"}
+		this.Data["json"] = map[string]interface{}{"error": "submitted_invalid_data"}
 		this.ServeJSON()
 		return
 	}
 	// check for empty fields
 	if form["email"] == nil || form["password"] == nil {
-		this.Data["json"] = map[string]interface{}{"error": "Both Email and Password are required"}
+		this.Data["json"] = map[string]interface{}{"error": "wrong_email_or_password"}
 		this.ServeJSON()
 		return
 	}
 	password := string(form["password"].(string))
 	email := string(form["email"].(string))
+
+	if len(email) < 5 {
+		this.Data["json"] = map[string]interface{}{"error": "short_email"}
+		this.ServeJSON()
+		return
+	}
+	if len(password) < 5 {
+		this.Data["json"] = map[string]interface{}{"error": "short_password"}
+		this.ServeJSON()
+		return
+	}
+
 	// Check for minimum password
 	if len(password) < 5 || len(password) > 16 {
-		this.Data["json"] = map[string]interface{}{"error": "Password should be 5 - 16 characters"}
+		this.Data["json"] = map[string]interface{}{"error": "password_should_be_5_to_16_chars"}
 		this.ServeJSON()
 		return
 	}
@@ -76,7 +82,7 @@ func (this *UserAPIController) Post() {
 	exist_user.Email = user.Email
 	o := orm.NewOrm()
 	if count, err := o.QueryTable(exist_user).Filter("Email", user.Email).Count(); count > 0 {
-		this.Data["json"] = map[string]interface{}{"error": "User with this email already exists", "err": err}
+		this.Data["json"] = map[string]interface{}{"error": "email_already_exists", "err": err}
 		this.ServeJSON()
 		return
 	}
@@ -86,7 +92,7 @@ func (this *UserAPIController) Post() {
 	if err != nil {
 		//DON'T SAVE PROFILE
 		o.Rollback()
-		this.Data["json"] = map[string]interface{}{"error": "Cannot save profile", "err": err, "id": id}
+		this.Data["json"] = map[string]interface{}{"error": "cannot_save_profile", "err": err, "id": id}
 		this.ServeJSON()
 		return
 	}
@@ -94,79 +100,105 @@ func (this *UserAPIController) Post() {
 	if err2 != nil {
 		// DON'S SAVE PROFILE AND USER
 		o.Rollback()
-		this.Data["json"] = map[string]interface{}{"error": "Cannot save user", "err2": err2, "id": id2}
+		this.Data["json"] = map[string]interface{}{"error": "cannot_save_user", "err2": err2, "id": id2}
 		this.ServeJSON()
 		return
 	}
 	//SAVE BOTH
 	o.Commit()
-	this.Data["json"] = map[string]interface{}{"success": "Successfully registred new user", "err": err}
+	this.Data["json"] = map[string]interface{}{"success": "register_success", "err": err}
 	this.ServeJSON()
 }
 
-func (this *UserAPIController) Put() {
-	sess_user := this.GetSession("current_user")
-	//current_user := map[string]interface{}{"id": "2"}
-	if sess_user == nil {
-		this.Data["json"] = map[string]interface{}{"error": "You are not logged in"}
+func (this *UserController) Login() {
+	if IsAuthenticated(&this.Controller) {
+		this.Redirect("/", 302)
+	}
+	this.Data["Title"] = "login"
+	SetupCommonLayout("pages/user/login.tpl", &this.Controller)
+}
+
+func (this *UserController) GetLogout() {
+	this.Redirect("/", 302)
+}
+
+func (this *UserController) PostLogin() {
+	if IsAuthenticated(&this.Controller) {
+		this.Redirect("/", 302)
+	}
+	form := map[string]interface{}{}
+	err := json.NewDecoder(this.Ctx.Request.Body).Decode(&form)
+	if err != nil {
+		this.Data["json"] = map[string]interface{}{"error": "submitted_invalid_data"}
 		this.ServeJSON()
 		return
 	}
-	current_user := sess_user.(map[string]interface{})
-	id, err := strconv.Atoi(current_user["id"].(string))
-	if err != nil {
-		this.Data["json"] = map[string]interface{}{"error": "Invalid user ID"}
+	if form["email"] == nil {
+		this.Data["json"] = map[string]interface{}{"error": "email_required"}
+		this.ServeJSON()
+		return
+	}
+	if form["password"] == nil {
+		this.Data["json"] = map[string]interface{}{"error": "password_required"}
 		this.ServeJSON()
 		return
 	}
 
-	form := map[string]interface{}{}
-	err = json.NewDecoder(this.Ctx.Request.Body).Decode(&form)
-	if err != nil {
-		this.Data["json"] = map[string]interface{}{"error": "Submitted an invalid data"}
+	email := form["email"].(string)
+	password := form["password"].(string)
+
+	if len(email) < 5 {
+		this.Data["json"] = map[string]interface{}{"error": "short_email"}
 		this.ServeJSON()
 		return
 	}
-	email := ""
-	password := ""
-	if form["password"] != nil {
-		password = string(form["password"].(string))
-	}
-	if form["email"] != nil {
-		email = string(form["email"].(string))
-	}
-	// Check for minimum password
-	if len(password) > 0 && (len(password) < 5 || len(password) > 16) {
-		this.Data["json"] = map[string]interface{}{"error": "Password should be 5 - 16 characters"}
+	if len(password) < 5 {
+		this.Data["json"] = map[string]interface{}{"error": "short_password"}
 		this.ServeJSON()
 		return
 	}
-	// get old user data
-	user := models.User{Id: id}
+
 	o := orm.NewOrm()
-	var num int64
-	password_changed, email_changed := false, false
-	if o.Read(&user) == nil {
-		if len(password) > 4 && len(password) < 17 {
-			user.Password = password
-			user.HashPassword()
-			password_changed = true
-		}
-		if user.Email != email {
-			user.Email = email
-			email_changed = true
-		}
-		if email_changed == false && password_changed == false {
-			this.Data["json"] = map[string]interface{}{"warning": "There was no any changes to save", "num": num}
-			this.ServeJSON()
-			return
-		}
-		if num, err = o.Update(&user); err == nil {
-			this.Data["json"] = map[string]interface{}{"success": "Successfully updated user", "num": num}
-			this.ServeJSON()
-			return
+	user := models.User{Email: email}
+	o.QueryTable("weydi_auth_user").Filter("Email__exact", email).One(&user)
+	if user.Id == 0 {
+		this.Data["json"] = map[string]interface{}{"error": "wrong_email_or_password"}
+		this.ServeJSON()
+		return
+	}
+	o.QueryTable("weydi_user_profile").Filter("Id", user.Profile.Id).One(user.Profile)
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	if err != nil {
+		this.Data["json"] = map[string]interface{}{"error": "wrong_email_or_password"}
+		this.ServeJSON()
+		return
+	}
+	user.Password = "hidden_for_security"
+
+	sess_user := map[string]interface{}{}
+	sess_user["id"] = user.Id
+	sess_user["email"] = user.Email
+	this.SetSession("current_user", sess_user)
+	full_name := user.Profile.FirstName + " " + user.Profile.LastName
+	if len(full_name) > 1 {
+		this.SetSession("full_name", user.Profile.FirstName+" "+user.Profile.LastName)
+	} else if len(email) > 0 {
+		username := strings.Split(user.Email, "@")
+		if len(username) > 0 {
+			this.SetSession("full_name", username[0])
+		} else {
+			this.SetSession("full_name", "Your name")
 		}
 	}
-	this.Data["json"] = map[string]interface{}{"error": "Could not update user", "err": err}
+
+	this.Data["json"] = map[string]interface{}{"success": "login_success", "err": err}
 	this.ServeJSON()
+	return
+}
+
+func (this *UserController) Logout() {
+	this.DelSession("current_user")
+	this.DelSession("full_name")
+	this.Redirect("/", 302)
 }
