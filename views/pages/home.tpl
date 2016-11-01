@@ -5,14 +5,11 @@
 
 
   <div class="col-sm-7">
-    <h1>{{i18n $.Lang "about"}}</h1>
-    <p>{{i18n $.Lang "app_description"}}</p>
-
     <br>
     <h1>{{i18n $.Lang "questions"}}</h1>
     <div class="list-item-container q-list">
       <div class="one-item-container q-item">
-        <h3><a href="#">What did you asked in this question?</a></h3>
+        <h3><a href="#">What did you asked in this question? Tell me more about the question then I will be able to answer?</a><a class="pull-right btn btn-primary answer-btn" href='/question/'>Answer</a></h3>
         <p>The description of the question you asked will be layed out here the same as this text you're reading right now.</p>
         <span>{{i18n $.Lang "time_before_hours" 1 }} </span>
         <span class="counter-item">5 | {{i18n $.Lang "loved_this"}}</span>
