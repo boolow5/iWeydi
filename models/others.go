@@ -84,3 +84,30 @@ type Like struct {
 func (l *Like) TableName() string {
 	return "user_likes"
 }
+
+type ActivityType struct {
+	Id        int       `json:"id" orm:"auto"`
+	CreatedAt time.Time `json:"created_at" orm:"auto_now_add;type(datetime)"`
+	UpdatedAt time.Time `json:"updated_at" orm:"auto_now;type(datetime)"`
+
+	Name string `json:"name" orm:"size(100);unique"`
+}
+
+func (at *ActivityType) TableName() string {
+	return "activity_type"
+}
+
+type Activity struct {
+	Id        int       `json:"id" orm:"auto"`
+	CreatedAt time.Time `json:"created_at" orm:"auto_now_add;type(datetime)"`
+	UpdatedAt time.Time `json:"updated_at" orm:"auto_now;type(datetime)"`
+
+	Doer   *User         `json:"doer" orm:"rel(fk);on_delete(cascade)"`
+	Type   *ActivityType `json:"type" orm:"rel(fk);on_delete(cascade)"`
+	Item   interface{}   `json:"item" orm:"-"`
+	ItemId int           `json:"item_id" orm:"item_id"`
+}
+
+func (a *Activity) TableName() string {
+	return "user_activity"
+}
