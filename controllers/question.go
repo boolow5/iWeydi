@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/astaxie/beego/orm"
@@ -12,13 +13,34 @@ type QuestionController struct {
 }
 
 func (this *QuestionController) GetQuestions() {
+	SetupCommonLayout("pages/questions/questions.tpl", &this.Controller)
 	o := orm.NewOrm()
 	questions := []models.Question{}
-	o.QueryTable("weydi_question").OrderBy("-created_at").All(&questions)
+	current_user := this.GetSession("current_user")
+	id := 0
+	if current_user != nil {
+		id = GetIDFromSession(current_user.(map[string]interface{}))
+	}
+	if id > 0 {
+		MY_USER_ID = id
+	}
+	fmt.Println("MY_USER_ID", MY_USER_ID)
+	if MY_USER_ID > 0 {
+		users_you_follow := GetUsersYouFollow(&this.Controller, MY_USER_ID)
+		fmt.Println("Users You Follow:", users_you_follow)
+
+		if len(users_you_follow) < 1 {
+			o.QueryTable("weydi_question").OrderBy("-created_at").All(&questions)
+			this.Data["Questions"] = questions
+			this.Data["Title"] = "questions"
+			return
+		}
+
+		o.QueryTable("weydi_question").Filter("author__id__in", users_you_follow).OrderBy("-created_at").All(&questions)
+	}
+
 	this.Data["Questions"] = questions
 	this.Data["Title"] = "questions"
-	SetupCommonLayout("pages/questions/questions.tpl", &this.Controller)
-
 }
 func (this *QuestionController) GetOneQuestion() {
 	SetupCommonLayout("pages/questions/question.tpl", &this.Controller)
