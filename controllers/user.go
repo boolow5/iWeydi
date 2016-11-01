@@ -106,6 +106,25 @@ func (this *UserController) PostUser() {
 	}
 	//SAVE BOTH
 	o.Commit()
+
+	sess_user := map[string]interface{}{}
+	sess_user["id"] = user.Id
+	sess_user["email"] = user.Email
+
+	full_name := user.Profile.FirstName + " " + user.Profile.LastName
+	if len(full_name) > 1 {
+		sess_user["full_name"] = user.Profile.FirstName + " " + user.Profile.LastName
+	} else if len(email) > 0 {
+		username := strings.Split(user.Email, "@")
+		if len(username) > 0 {
+			sess_user["full_name"] = username[0]
+		} else {
+			sess_user["full_name"] = "Your name"
+		}
+	}
+
+	this.SetSession("current_user", sess_user)
+
 	this.Data["json"] = map[string]interface{}{"success": "register_success", "err": err}
 	this.ServeJSON()
 }
@@ -179,18 +198,20 @@ func (this *UserController) PostLogin() {
 	sess_user := map[string]interface{}{}
 	sess_user["id"] = user.Id
 	sess_user["email"] = user.Email
-	this.SetSession("current_user", sess_user)
+
 	full_name := user.Profile.FirstName + " " + user.Profile.LastName
 	if len(full_name) > 1 {
-		this.SetSession("full_name", user.Profile.FirstName+" "+user.Profile.LastName)
+		sess_user["full_name"] = user.Profile.FirstName + " " + user.Profile.LastName
 	} else if len(email) > 0 {
 		username := strings.Split(user.Email, "@")
 		if len(username) > 0 {
-			this.SetSession("full_name", username[0])
+			sess_user["full_name"] = username[0]
 		} else {
-			this.SetSession("full_name", "Your name")
+			sess_user["full_name"] = "Your name"
 		}
 	}
+
+	this.SetSession("current_user", sess_user)
 
 	this.Data["json"] = map[string]interface{}{"success": "login_success", "err": err}
 	this.ServeJSON()
