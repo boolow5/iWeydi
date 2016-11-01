@@ -179,13 +179,13 @@ func (this *UserController) PostLogin() {
 
 	o := orm.NewOrm()
 	user := models.User{Email: email}
-	o.QueryTable("weydi_auth_user").Filter("Email__exact", email).One(&user)
+	o.QueryTable("weydi_auth_user").Filter("Email__exact", email).RelatedSel().One(&user)
 	if user.Id == 0 {
 		this.Data["json"] = map[string]interface{}{"error": "wrong_email_or_password"}
 		this.ServeJSON()
 		return
 	}
-	o.QueryTable("weydi_user_profile").Filter("Id", user.Profile.Id).One(user.Profile)
+	//o.QueryTable("weydi_user_profile").Filter("Id", user.Profile.Id).One(user.Profile)
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
