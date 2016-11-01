@@ -1,12 +1,8 @@
 package models
 
 import (
-	"fmt"
-	"strconv"
 	"strings"
 	"time"
-
-	"github.com/astaxie/beego/orm"
 )
 
 type Question struct {
@@ -24,6 +20,10 @@ type Question struct {
 	Comments []*QuestionComment `json:"comments" orm:"-"`
 	LikedBy  []User             `json:"i_liked_this" orm:"-"`
 	HatedBy  []User             `json:"i_liked_this" orm:"-"`
+
+	LoveCount    int `json:"love_count" orm:"-"`
+	HateCount    int `json:"hate_count" orm:"-"`
+	CommentCount int `json:"comment_count" orm:"-"`
 }
 
 func (q *Question) TableName() string {
@@ -36,7 +36,8 @@ func (q *Question) SetText(text string) {
 	q.Text = text
 	q.TextId = strings.Replace(q.Text, " ", "-", -1)
 }
-func (q *Question) LoveCount(id int) (count int64) {
+
+/*func (q *Question) LoveCount(id int) (count int64) {
 	fmt.Println("LoveCount: id = ", id)
 	user_ids := []orm.Params{}
 
@@ -105,7 +106,7 @@ func (q *Question) CommentCount() (count int64) {
 	fmt.Println("CommentCount:", count)
 	return
 }
-
+*/
 type QuestionComment struct {
 	Id        int       `json:"id" orm:"auto"`
 	CreatedAt time.Time `json:"created_at" orm:"auto_now_add;type(datetime)"`
