@@ -8,22 +8,16 @@
     {{range $index, $val := .Questions}}
 
       <div class="one-item-container q-item">
-        <h3><a href="#">{{$val.Text}}</a></h3>
+
+        <h3><a href="/question/{{$val.Id}}">{{$val.Text}}</a></h3>
         <p>{{$val.Description}}</p>
-        <span>{{$val.CreatedAt}} </span>
-        <span class="counter-item">
-          <span class="question-like-counter" id="{{$val.Id}}-question-like-counter">0</span>
-          | {{i18n $.Lang "loved_this"}}
-        </span>
-        <span class="counter-item">
-          <span class="question-dislike-counter" id="{{$val.Id}}-question-dislike-counter">0</span>
-          | {{i18n $.Lang "hated_this"}}
-        </span>
-        <span class="counter-item">
-          <span class="question-comment-counter" id="{{$val.Id}}-question-comment-counter">0</span>
-          | {{i18n $.Lang "commented_on_this"}}
-        </span>
+        <span>{{i18n $.Lang "time_written" }}:  {{dateformat $val.CreatedAt "02-01-06 15:04:05"}} </span>
+        <span class='counter-item'>{{$val.LoveCount $.MyID}} | {{i18n $.Lang "loved_this"}}</span>
+        <span class="counter-item">{{$val.HateCount $.MyID}} | {{i18n $.Lang "hated_this"}}</span>
+        <span class="counter-item">{{$val.CommentCount}} | {{i18n $.Lang "commented_on_this"}}</span>
+        <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-primary answer-btn' href='/question/{{$val.Id}}'>{{ i18n $.Lang "answer_this"}}</a>
       </div>
+
     {{end}}
     </div>
 
