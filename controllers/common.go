@@ -20,11 +20,17 @@ func SetupCommonLayout(tplName string, controller *beego.Controller) {
 	controller.LayoutSections["NavPills"] = "partials/nav-pills.tpl"
 	controller.Data["LoggedIn"] = IsAuthenticated(controller)
 	controller.Data["NotLoggedIn"] = !IsAuthenticated(controller)
-	controller.Data["FullName"] = controller.GetSession("full_name")
 
 	controller.Data["xsrf_token"] = controller.XSRFToken()
 	controller.XSRFExpire = 7200
 	controller.Data["xsrfdata"] = template.HTML(controller.XSRFFormHTML())
+
+	current_user := controller.GetSession("current_user")
+	if current_user != nil {
+		user := current_user.(map[string]interface{})
+		controller.Data["FullName"] = user["full_name"]
+		controller.Data["MyID"] = user["id"]
+	}
 }
 
 func ReporError(errMessage string, controller *beego.Controller) {
