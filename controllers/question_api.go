@@ -58,7 +58,8 @@ func (this *QuestionAPIController) Post() {
 		return
 	}
 	//use data to initialize new question
-	question := models.Question{Description: question_description, Author: &models.User{Id: user_id}}
+	user := models.User{Id: user_id}
+	question := models.Question{Description: question_description, Author: &user}
 	question.SetText(question_text)
 
 	o := orm.NewOrm()
@@ -75,15 +76,27 @@ func (this *QuestionAPIController) Post() {
 	}
 
 	o.Begin()
-	id, err := o.Insert(&question)
+	question_id, err := o.Insert(&question)
 	if err != nil {
-		//DON'T SAVE PROFILE
+		//DON'T SAVE ANYTHING
+		o.Rollback()
+		this.Data["json"] = map[string]interface{}{"error": "cannot_save_question", "err": err, "id": question_id}
+		this.ServeJSON()
+		return
+	}
+	//SAVE QUESTION ACTIVITY
+	activity := models.Activity{
+		Doer:   &user,
+		Type:   &models.ActivityType{Id: 1},
+		ItemId: int(question_id),
+	}
+	id, err := o.Insert(&activity)
+	if err != nil {
 		o.Rollback()
 		this.Data["json"] = map[string]interface{}{"error": "cannot_save_question", "err": err, "id": id}
 		this.ServeJSON()
 		return
 	}
-	//SAVE QUESTION
 	o.Commit()
 	this.Data["json"] = map[string]interface{}{"success": "add_question_success", "err": err}
 	this.ServeJSON()
