@@ -6,7 +6,9 @@
         <ul class='nav nav-pills{{if eq .Lang "ar-SA" }} arabic-menu-list{{end}}' role="tablist">
 
         {{if neq .Lang "ar-SA"}}
-          <li role='presentation'><a class="head-brand-name" href="/">iWeydi</a></li>
+          <li role='presentation'>
+            <a class="head-brand-name" href="/"><img src="/static/icons/favicon-32x32.png" height="20px"> &nbsp; iWeydi</a>
+          </li>
           <li role='presentation' class='{{if eq .Title "home"}} active{{end}}'><a href="/">{{i18n $.Lang "home"}} <span class="badge">42</span></a></li>
           {{if .LoggedIn }}
           <li role='presentation' class='{{if eq .Title "messages"}} active{{end}}'><a href="/messages">{{i18n $.Lang "messages"}} <span class="badge">3</span></a></li>
@@ -54,6 +56,10 @@
           <li role='presentation' class='{{if eq .Title "messages"}} active{{end}}'><a href="/messages">{{i18n $.Lang "messages"}} <span class="badge">3</span></a></li>
           {{end}}
           <li role='presentation pull-right' class="active"><a href="#">{{i18n $.Lang "home"}} <span class="badge">42</span></a></li>
+
+          <li role='presentation'>
+            <a class="head-brand-name" href="/"><img src="/static/icons/favicon-32x32.png" height="20px"> &nbsp; iWeydi</a>
+          </li>
         {{end}}
         </ul>
       </li>
