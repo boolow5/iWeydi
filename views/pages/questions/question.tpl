@@ -3,14 +3,30 @@
   {{template "partials/left-sidebar.tpl"}}
 
   <div class="col-sm-7">
-    <h1>{{i18n $.Lang .Title}}</h1>
+    <h1>{{i18n $.Lang .Question.Text}}</h1>
     <div class="one-item-container">
+      <p><strong>{{i18n $.Lang "description"}}:</strong></p>
       <p>{{.Question.Description}}</p>
       <hr/>
-      {{if isZeroLen .Answers}}
+
+
+      <div class="a-item one-item-container">
+        <form method="POST" action="/api/answer" id="new-answer-form">
+
+
+            <!--<span class='input-group-addon form-control-arabic' id="basic-addon1">{{i18n .Lang "new_answer"}}</span>
+            <input type="text" class="form-control form-control-arabic" name="text" placeholder='{{i18n .Lang "enter_answer_here"}}' id="answer-text-editor" aria-describedby="basic-addon1">
+          -->
+            <textarea class="textwrapper" name="text" placeholder='{{i18n .Lang "enter_answer_here"}}' rows="10" id="answer-text-editor"></textarea>
+
+          <br>
+          <button class="btn btn-primary" id="add-new-answer-btn">{{i18n .Lang "save"}}</button>
+
+        </form>
+      </div>
+
       <h1>{{i18n $.Lang "answers"}}</h1>
-      {{end}}
-      {{if isNotZeroLen .Answers}}
+
       {{range $val, $index := .Answers}}
 
       <div class="a-item one-item-container">
@@ -37,7 +53,7 @@
       </div>
 
 
-      {{end}}
+
       {{end}}
     </div>
 
