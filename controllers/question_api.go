@@ -58,9 +58,21 @@ func (this *QuestionAPIController) Post() {
 		return
 	}
 	//use data to initialize new question
-	question := models.Question{Text: question_text, Description: question_description, Author: &models.User{Id: user_id}}
+	question := models.Question{Description: question_description, Author: &models.User{Id: user_id}}
+	question.SetText(question_text)
 
 	o := orm.NewOrm()
+	q_count, err := o.QueryTable(question).Filter("text_id__exact", question.TextId).Count()
+	if err != nil {
+		this.Data["json"] = map[string]interface{}{"error": err.Error()}
+		this.ServeJSON()
+		return
+	}
+	if q_count != 0 {
+		this.Data["json"] = map[string]interface{}{"error": "got_same_question"}
+		this.ServeJSON()
+		return
+	}
 
 	o.Begin()
 	id, err := o.Insert(&question)
@@ -119,7 +131,9 @@ func (this *QuestionAPIController) Put() {
 	}
 
 	o := orm.NewOrm()
-	question := models.Question{Id: question_id, Text: question_text}
+	question := models.Question{Id: question_id}
+	question.SetText(question_text)
+
 	_, err = o.Update(&question)
 	if err != nil {
 		this.Data["json"] = map[string]interface{}{"error": "question_update_fail", "reason": err}
