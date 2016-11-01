@@ -3,14 +3,18 @@ package controllers
 import (
 	"fmt"
 	"html/template"
+	"strconv"
 	"strings"
 
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/orm"
 )
 
 var ALLOWED_HOSTS = "localhost"
+var MY_USER_ID = 0
 
 func SetupCommonLayout(tplName string, controller *beego.Controller) {
+	fmt.Println("SetupCommonLayout")
 	controller.Layout = "layouts/base.tpl"
 	controller.TplName = tplName
 	controller.LayoutSections = make(map[string]string)
@@ -29,8 +33,35 @@ func SetupCommonLayout(tplName string, controller *beego.Controller) {
 	if current_user != nil {
 		user := current_user.(map[string]interface{})
 		controller.Data["FullName"] = user["full_name"]
-		controller.Data["MyID"] = user["id"]
+		id, _ := strconv.Atoi(string(user["id"].(int)))
+		controller.Data["MyID"] = id
+		fmt.Println("-----id", id)
+		MY_USER_ID = id
 	}
+}
+
+func GetIDFromSession(mp map[string]interface{}) int {
+	id := 0
+	if mp != nil {
+		id, _ = mp["id"].(int)
+	}
+	return id
+}
+
+func GetUsersYouFollow(controller *beego.Controller, my_id int) (users_ids []int) {
+	o := orm.NewOrm()
+	// select followee_id  from weydi_item_follower where user_id = 1;
+	// i, err := o.QueryTable("weydi_item_follower").Filter("user__id__exact", my_id).All(&users_ids, "followee_id")
+	ids := []orm.Params{}
+	o.Raw("SELECT followee_id FROM weydi_item_follower WHERE user_id = ?", my_id).Values(&ids, "followee_id")
+	fmt.Println("ids:\n", ids)
+	for _, v := range ids {
+		value, err := strconv.Atoi(v["followee_id"].(string))
+		if err == nil && value > 0 {
+			users_ids = append(users_ids, (value))
+		}
+	}
+	return users_ids
 }
 
 func ReporError(errMessage string, controller *beego.Controller) {
