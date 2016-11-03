@@ -84,19 +84,6 @@ func (this *QuestionAPIController) Post() {
 		this.ServeJSON()
 		return
 	}
-	//SAVE QUESTION ACTIVITY
-	activity := models.Activity{
-		Doer:   &user,
-		Type:   &models.ActivityType{Id: 1},
-		ItemId: int(question_id),
-	}
-	id, err := o.Insert(&activity)
-	if err != nil {
-		o.Rollback()
-		this.Data["json"] = map[string]interface{}{"error": "cannot_save_question", "err": err, "id": id}
-		this.ServeJSON()
-		return
-	}
 	o.Commit()
 	this.Data["json"] = map[string]interface{}{"success": "add_question_success", "err": err}
 	this.ServeJSON()
