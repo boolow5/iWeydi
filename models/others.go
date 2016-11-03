@@ -31,17 +31,6 @@ func (t *Topic) String() string {
 	return t.Name
 }
 
-type Feed struct {
-	Id int `json:"id" orm:"auto"`
-
-	User   *User   `json:"user" orm:"rel(fk);on_delete(cascade)"`
-	Answer *Answer `json:"answer" orm:"rel(fk);on_delete(cascade)"`
-}
-
-func (f *Feed) TableName() string {
-	return "user_feed"
-}
-
 type Follower struct {
 	Id int `json:"id" orm:"auto"`
 
