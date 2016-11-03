@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 
 	"github.com/astaxie/beego"
@@ -85,6 +86,17 @@ func (this *UserController) Post() {
 	}
 	user.HashPassword()
 	profile := models.Profile{}
+
+	if form["first_name"] != nil {
+		profile.FirstName = string(form["first_name"].(string))
+	}
+	if form["last_name"] != nil {
+		profile.LastName = string(form["last_name"].(string))
+	}
+
+	fmt.Println("Profile: ")
+	fmt.Println(profile)
+
 	user.Profile = &profile
 
 	// save the new user to database
