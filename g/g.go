@@ -55,7 +55,7 @@ func InitEnv() {
 	new(models.Topic), new(models.Feed), new(models.Follower), new(models.Like))*/
 	orm.RegisterModelWithPrefix("weydi_", new(models.User), new(models.Profile), new(models.Question),
 		new(models.Answer), new(models.Topic), new(models.Follower), new(models.Like),
-		new(models.QuestionComment), new(models.AnswerComment), new(models.Language), new(models.ActivityType), new(models.Activity))
+		new(models.CommentParent), new(models.Comment), new(models.Language), new(models.ActivityType), new(models.Activity))
 	//orm.RunCommand()
 
 }
