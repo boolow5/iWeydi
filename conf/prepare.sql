@@ -1,5 +1,4 @@
-/*
-  The following SQL code is run the first time to configre the database to behave as intended
+/*  The following SQL code is run the first time to configre the database to behave as intended
   It contains:
     1. Table Declarations
     2. Function Declarations
@@ -11,8 +10,216 @@
 
 /*                              1. Table Declarations.                                    */
 /******************************************************************************************/
+-- --drop table `weydi_auth_user`
+--     DROP TABLE IF EXISTS "weydi_auth_user"
+--
+-- --drop table `weydi_user_profile`
+--     DROP TABLE IF EXISTS "weydi_user_profile"
+--
+-- --drop table `weydi_question`
+--     DROP TABLE IF EXISTS "weydi_question"
+--
+-- --drop table `weydi_answer`
+--     DROP TABLE IF EXISTS "weydi_answer"
+--
+-- --drop table `weydi_topic`
+--     DROP TABLE IF EXISTS "weydi_topic"
+--
+-- --drop table `weydi_item_follower`
+--     DROP TABLE IF EXISTS "weydi_item_follower"
+--
+-- --drop table `weydi_user_likes`
+--     DROP TABLE IF EXISTS "weydi_user_likes"
+--
+-- --drop table `weydi_comment_parent`
+--     DROP TABLE IF EXISTS "weydi_comment_parent"
+--
+-- --drop table `weydi_user_comment`
+--     DROP TABLE IF EXISTS "weydi_user_comment"
+--
+-- --drop table `weydi_language`
+--     DROP TABLE IF EXISTS "weydi_language"
+--
+-- --drop table `weydi_activity_type`
+--     DROP TABLE IF EXISTS "weydi_activity_type"
+--
+-- --drop table `weydi_user_activity`
+--     DROP TABLE IF EXISTS "weydi_user_activity"
+--
+-- --create table `weydi_auth_user`
+--     -- --------------------------------------------------
+--     --  Table Structure for `github.com/boolow5/iWeydi/models.User`
+--     -- --------------------------------------------------
+--     CREATE TABLE IF NOT EXISTS "weydi_auth_user" (
+--         "id" serial NOT NULL PRIMARY KEY,
+--         "created_at" timestamp with time zone NOT NULL,
+--         "updated_at" timestamp with time zone NOT NULL,
+--         "email" varchar(255) NOT NULL DEFAULT ''  UNIQUE,
+--         "password" varchar(255) NOT NULL DEFAULT '' ,
+--         "profile_id" integer NOT NULL UNIQUE
+--     );
+--
+-- --create table `weydi_user_profile`
+--     -- --------------------------------------------------
+--     --  Table Structure for `github.com/boolow5/iWeydi/models.Profile`
+--     -- --------------------------------------------------
+--     CREATE TABLE IF NOT EXISTS "weydi_user_profile" (
+--         "id" serial NOT NULL PRIMARY KEY,
+--         "created_at" timestamp with time zone NOT NULL,
+--         "updated_at" timestamp with time zone NOT NULL,
+--         "first_name" varchar(255),
+--         "last_name" varchar(255),
+--         "avatar_url" varchar(255),
+--         "likes" integer NOT NULL DEFAULT 0 ,
+--         "answer_count" integer NOT NULL DEFAULT 0 ,
+--         "question_count" integer NOT NULL DEFAULT 0
+--     );
+--
+-- --create table `weydi_question`
+--     -- --------------------------------------------------
+--     --  Table Structure for `github.com/boolow5/iWeydi/models.Question`
+--     -- --------------------------------------------------
+--     CREATE TABLE IF NOT EXISTS "weydi_question" (
+--         "id" serial NOT NULL PRIMARY KEY,
+--         "created_at" timestamp with time zone NOT NULL,
+--         "updated_at" timestamp with time zone NOT NULL,
+--         "text" varchar(300) NOT NULL DEFAULT ''  UNIQUE,
+--         "text_id" varchar(310) NOT NULL DEFAULT ''  UNIQUE,
+--         "description" varchar(600),
+--         "author_id" integer NOT NULL,
+--         "language_id" integer,
+--         "love_count" integer NOT NULL DEFAULT 0 ,
+--         "hate_count" integer NOT NULL DEFAULT 0 ,
+--         "comment_count" integer NOT NULL DEFAULT 0
+--     );
+--
+-- --create table `weydi_answer`
+--     -- --------------------------------------------------
+--     --  Table Structure for `github.com/boolow5/iWeydi/models.Answer`
+--     -- --------------------------------------------------
+--     CREATE TABLE IF NOT EXISTS "weydi_answer" (
+--         "id" serial NOT NULL PRIMARY KEY,
+--         "created_at" timestamp with time zone NOT NULL,
+--         "updated_at" timestamp with time zone NOT NULL,
+--         "text" varchar(1000) NOT NULL DEFAULT '' ,
+--         "author_id" integer NOT NULL,
+--         "question_id" integer NOT NULL,
+--         "love_count" integer NOT NULL DEFAULT 0 ,
+--         "hate_count" integer NOT NULL DEFAULT 0 ,
+--         "comment_count" integer NOT NULL DEFAULT 0
+--     );
+--
+-- --create table `weydi_topic`
+--     -- --------------------------------------------------
+--     --  Table Structure for `github.com/boolow5/iWeydi/models.Topic`
+--     -- --------------------------------------------------
+--     CREATE TABLE IF NOT EXISTS "weydi_topic" (
+--         "id" serial NOT NULL PRIMARY KEY,
+--         "created_at" timestamp with time zone NOT NULL,
+--         "updated_at" timestamp with time zone NOT NULL,
+--         "name" varchar(100) NOT NULL DEFAULT ''  UNIQUE,
+--         "follower_count" integer NOT NULL DEFAULT 0 ,
+--         "parent_id" integer NOT NULL
+--     );
+--
+-- --create table `weydi_item_follower`
+--     -- --------------------------------------------------
+--     --  Table Structure for `github.com/boolow5/iWeydi/models.Follower`
+--     -- --------------------------------------------------
+--     CREATE TABLE IF NOT EXISTS "weydi_item_follower" (
+--         "id" serial NOT NULL PRIMARY KEY,
+--         "followee_id" integer,
+--         "user_id" integer,
+--         "topic_id" integer
+--     );
+--
+-- --create table `weydi_user_likes`
+--     -- --------------------------------------------------
+--     --  Table Structure for `github.com/boolow5/iWeydi/models.Like`
+--     -- --------------------------------------------------
+--     CREATE TABLE IF NOT EXISTS "weydi_user_likes" (
+--         "id" serial NOT NULL PRIMARY KEY,
+--         "postive" bool NOT NULL DEFAULT true ,
+--         "user_id" integer,
+--         "question_id" integer,
+--         "answer_id" integer,
+--         "comment_id" integer
+--     );
+--
+-- --create table `weydi_comment_parent`
+--     -- --------------------------------------------------
+--     --  Table Structure for `github.com/boolow5/iWeydi/models.CommentParent`
+--     -- --------------------------------------------------
+--     CREATE TABLE IF NOT EXISTS "weydi_comment_parent" (
+--         "id" serial NOT NULL PRIMARY KEY,
+--         "name" varchar(20) NOT NULL DEFAULT ''
+--     );
+--
+-- --create table `weydi_user_comment`
+--     -- --------------------------------------------------
+--     --  Table Structure for `github.com/boolow5/iWeydi/models.Comment`
+--     -- --------------------------------------------------
+--     CREATE TABLE IF NOT EXISTS "weydi_user_comment" (
+--         "id" serial NOT NULL PRIMARY KEY,
+--         "created_at" timestamp with time zone NOT NULL,
+--         "updated_at" timestamp with time zone NOT NULL,
+--         "text" varchar(500) NOT NULL DEFAULT '' ,
+--         "author_id" integer NOT NULL,
+--         "answer_id" integer NOT NULL,
+--         "question_id" integer NOT NULL,
+--         "parent_type_id" integer NOT NULL,
+--         "love_count" integer NOT NULL DEFAULT 0 ,
+--         "hate_count" integer NOT NULL DEFAULT 0 ,
+--         "comment_count" integer NOT NULL DEFAULT 0
+--     );
+--
+-- --create table `weydi_language`
+--     -- --------------------------------------------------
+--     --  Table Structure for `github.com/boolow5/iWeydi/models.Language`
+--     -- --------------------------------------------------
+--     CREATE TABLE IF NOT EXISTS "weydi_language" (
+--         "id" serial NOT NULL PRIMARY KEY,
+--         "name" varchar(100) NOT NULL DEFAULT ''  UNIQUE,
+--         "code" varchar(10) NOT NULL DEFAULT ''
+--     );
+--
+-- --create table `weydi_activity_type`
+--     -- --------------------------------------------------
+--     --  Table Structure for `github.com/boolow5/iWeydi/models.ActivityType`
+--     -- --------------------------------------------------
+--     CREATE TABLE IF NOT EXISTS "weydi_activity_type" (
+--         "id" serial NOT NULL PRIMARY KEY,
+--         "created_at" timestamp with time zone NOT NULL,
+--         "updated_at" timestamp with time zone NOT NULL,
+--         "name" varchar(100) NOT NULL DEFAULT ''  UNIQUE
+--     );
+--
+-- --create table `weydi_user_activity`
+--     -- --------------------------------------------------
+--     --  Table Structure for `github.com/boolow5/iWeydi/models.Activity`
+--     -- --------------------------------------------------
+--     CREATE TABLE IF NOT EXISTS "weydi_user_activity" (
+--         "id" serial NOT NULL PRIMARY KEY,
+--         "created_at" timestamp with time zone NOT NULL,
+--         "updated_at" timestamp with time zone NOT NULL,
+--         "doer_id" integer NOT NULL,
+--         "type_id" integer NOT NULL,
+--         "item_id" integer NOT NULL DEFAULT 0
+--     );
 
 
+/********************* views **********************/
+CREATE OR REPLACE VIEW user_view AS
+	SELECT U.id, U.email, U.created_at, P.first_name, P.last_name, P.avatar_url, P.likes, P.answer_count, question_count FROM weydi_auth_user U
+		LEFT JOIN weydi_user_profile P ON U.profile_id = P.id
+
+CREATE OR REPLACE VIEW answer_view AS
+	SELECT 	A.id AS q_id, Q.created_at AS q_created_at, Q.text AS q_text, Q.text_id AS q_text_id, Q.description AS q_description,
+		Q.author_id AS q_author_id, Q.language_id AS q_language_id, Q.love_count AS q_love_count, Q.hate_count AS q_hate_count,
+		Q.comment_count AS q_comment_count, A.id AS a_answer_id, A.created_at AS a_created_at, A.text AS a_text,
+		A.author_id AS a_author_id, A.love_count AS a_love_count, A.hate_count AS a_hate_count, A.comment_count AS a_comment_count
+	FROM weydi_question Q
+		LEFT JOIN weydi_answer A ON Q.id = A.question_id
 
 
 
@@ -142,3 +349,9 @@ $like_trigger$ LANGUAGE plpgsql;
 
 /*                               2. Data                                                  */
 /******************************************************************************************/
+-- -- insert two users Mahdi and Muno
+-- INSERT INTO weydi_auth_user(created_at, updated_at, email, password, profile_id)
+-- 										VALUES(now(),now(),'boolow5@gmail.com', '$2a$10$BYlqx4UDfbthgx1B34sshOSkdg6KmanA2yixtbI/2xsdotK0/sS8K')
+--
+-- INSERT INTO weydi_auth_user(created_at, updated_at, email, password, profile_id)
+-- 									VALUES(now(),now(),'lajecleey5@gmail.com', '$2a$10$XWsXQnCjR/2ZFes7CrTWUecupBBe3Z0bxJ.Fu7qBaEcMB57tfVg1a')
