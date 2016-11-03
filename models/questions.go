@@ -17,13 +17,13 @@ type Question struct {
 
 	Language *Language `json:"language" orm:"rel(fk);on_delete(set_null);null"`
 
-	Comments []*QuestionComment `json:"comments" orm:"-"`
-	LikedBy  []User             `json:"i_liked_this" orm:"-"`
-	HatedBy  []User             `json:"i_liked_this" orm:"-"`
+	Comments []*Comment `json:"comments" orm:"-"`
+	LikedBy  []User     `json:"i_liked_this" orm:"-"`
+	HatedBy  []User     `json:"i_liked_this" orm:"-"`
 
-	LoveCount    int `json:"love_count" orm:"-"`
-	HateCount    int `json:"hate_count" orm:"-"`
-	CommentCount int `json:"comment_count" orm:"-"`
+	LoveCount    int `json:"love_count" orm:"default(0)"`
+	HateCount    int `json:"hate_count" orm:"default(0)"`
+	CommentCount int `json:"comment_count" orm:"default(0)"`
 }
 
 func (q *Question) TableName() string {
@@ -107,20 +107,3 @@ func (q *Question) CommentCount() (count int64) {
 	return
 }
 */
-type QuestionComment struct {
-	Id        int       `json:"id" orm:"auto"`
-	CreatedAt time.Time `json:"created_at" orm:"auto_now_add;type(datetime)"`
-	UpdatedAt time.Time `json:"updated_at" orm:"auto_now;type(datetime)"`
-
-	Text     string    `json:"text" orm:"size(500)"`
-	Author   *User     `json:"author" orm:"rel(fk);on_delete(cascade)"`
-	Question *Question `json:"question" orm:"rel(fk);on_delete(cascade)"`
-}
-
-func (qc *QuestionComment) TableName() string {
-	return "question_comment"
-}
-
-func (qc *QuestionComment) String() string {
-	return qc.Text
-}
