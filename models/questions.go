@@ -15,11 +15,16 @@ type Question struct {
 	Description string `json:"description" orm:"null;size(600)"`
 	Author      *User  `json:"author" orm:"rel(fk);on_delete(cascade)"`
 
-	Language *Language `json:"language" orm:"rel(fk);on_delete(set_null);null"`
+	Language   *Language   `json:"language" orm:"rel(fk);on_delete(set_null);null"`
+	Conference *Conference `json:"Conference" orm:"rel(fk);on_delete(set_null);null"`
 
-	Comments []*Comment `json:"comments" orm:"-"`
-	LikedBy  []User     `json:"i_liked_this" orm:"-"`
-	HatedBy  []User     `json:"i_liked_this" orm:"-"`
+	//Topics []*Topic `json: "topics" orm:"rel(m2m)"`
+
+	//Answers  []*Answer  `json: "answers" orm:"reverse(many)"`
+	Comments []*Comment `json:"comments" orm:"reverse(many)"`
+
+	LikedBy []User `json:"i_liked_this" orm:"-"`
+	HatedBy []User `json:"i_liked_this" orm:"-"`
 
 	LoveCount    int `json:"love_count" orm:"default(0)"`
 	HateCount    int `json:"hate_count" orm:"default(0)"`
