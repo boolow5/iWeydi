@@ -53,7 +53,7 @@ func InitEnv() {
 
 	/*orm.RegisterModel(new(models.User), new(models.Profile), new(models.Question), new(models.Answer),
 	new(models.Topic), new(models.Feed), new(models.Follower), new(models.Like))*/
-	orm.RegisterModelWithPrefix("weydi_", new(models.User), new(models.Profile), new(models.Question),
+	orm.RegisterModelWithPrefix("weydi_", new(models.User), new(models.Profile), new(models.Conference), new(models.Question),
 		new(models.Answer), new(models.Topic), new(models.Follower), new(models.Like),
 		new(models.CommentParent), new(models.Comment), new(models.Language), new(models.ActivityType), new(models.Activity))
 	//orm.RunCommand()
