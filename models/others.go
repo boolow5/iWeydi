@@ -20,6 +20,8 @@ type Topic struct {
 	FollowerCount int    `json:"followers"`
 	Parent        *Topic `json:"parent_topic" orm:"rel(fk);on_delete(cascade)"`
 
+	//Question []*Question `json:"questions" orm:"reverse(many)"`
+
 	Followers []Follower `json:"followers_ids" orm:"-"`
 }
 
