@@ -61,6 +61,9 @@ type ActivityType struct {
 	UpdatedAt time.Time `json:"updated_at" orm:"auto_now;type(datetime)"`
 
 	Name string `json:"name" orm:"size(100);unique"`
+	// 1. question_asked 2. answer_question 3. comment_on
+	// 4. reacted_to_question 5. reacted_to_answer
+	// 6. followed_question 7. followed_topic
 }
 
 func (at *ActivityType) TableName() string {
@@ -80,4 +83,21 @@ type Activity struct {
 
 func (a *Activity) TableName() string {
 	return "user_activity"
+}
+
+type Conference struct {
+	Id        int       `json:"id" orm:"auto"`
+	CreatedAt time.Time `json:"created_at" orm:"auto_now_add;type(datetime)"`
+	UpdatedAt time.Time `json:"updated_at" orm:"auto_now;type(datetime)"`
+
+	Opening time.Time `json:"opening" orm:"type(datetime)"`
+	Closing time.Time `json:"closing" orm:"type(datetime)"`
+
+	Question []*Question `json:"questions" orm:"reverse(many)"`
+
+	Guest *User `json:"guest" orm:"rel(fk);on_delete(cascade)"`
+}
+
+func (c *Conference) TableName() string {
+	return "guest_conference"
 }
