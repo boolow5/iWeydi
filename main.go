@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"strings"
 
 	"github.com/astaxie/beego"
 	"github.com/beego/i18n"
@@ -59,6 +60,25 @@ func main() {
 	beego.AddFuncMap("markdown", func(args ...interface{}) template.HTML {
 		s := blackfriday.MarkdownCommon([]byte(fmt.Sprintf("%s", args...)))
 		return template.HTML(s)
+	})
+
+	beego.AddFuncMap("shorten_makrdown", func(markdown string, desired_length int) string /*template.HTML*/ {
+		var str string
+		if len(markdown) > desired_length {
+			str = markdown[:desired_length]
+			str = strings.TrimSpace(str)
+			str += "..."
+		} else {
+			str = markdown
+		}
+
+		str = strings.Replace(str, "*", "", -1)
+		str = strings.Replace(str, "#", "", -1)
+		str = strings.Replace(str, "\n", "", -1)
+
+		//s := blackfriday.MarkdownCommon([]byte(fmt.Sprintf("%s", str)))
+		//return template.HTML(s)
+		return str
 	})
 
 	beego.Run()
