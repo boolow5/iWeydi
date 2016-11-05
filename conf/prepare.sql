@@ -26,6 +26,15 @@ CREATE OR REPLACE VIEW answer_view AS
 	FROM weydi_question Q
 		LEFT JOIN weydi_answer A ON Q.id = A.question_id;
 
+CREATE OR REPLACE VIEW answer_activity_view AS
+	SELECT AN.*, Q.id AS question_id, Q.text AS question_text, U.id AS user_id, concat(P.first_name, ' ', P.last_name) AS Doer  FROM weydi_user_activity A
+		INNER JOIN weydi_activity_type T ON A.type_id = T.id
+		INNER JOIN weydi_answer AN ON A.item_id = AN.id AND A.type_id = 2
+		INNER JOIN weydi_question Q ON AN.question_id = Q.id
+		INNER JOIN weydi_auth_user U ON AN.author_id = U.id
+		INNER JOIN weydi_user_profile P ON P.id = U.profile_id;
+
+
 
 
 /*                               2. Function Declarations                                 */
@@ -161,9 +170,18 @@ $like_trigger$ LANGUAGE plpgsql;
 	VALUES(now(), now(), 'Mahdi', 'Bolow', 'https://github.com/boolow5.png');
 INSERT INTO weydi_user_profile(created_at, updated_at, first_name, last_name, avatar_url)
 	VALUES(now(), now(), 'Muno', 'Salaad', 'https://github.com/boolow5.png');
-	
+
  INSERT INTO weydi_auth_user(created_at, updated_at, email, password, profile_id)
 	VALUES(now(),now(),'boolow5@gmail.com', '$2a$10$BYlqx4UDfbthgx1B34sshOSkdg6KmanA2yixtbI/2xsdotK0/sS8K', 1);
 
  INSERT INTO weydi_auth_user(created_at, updated_at, email, password, profile_id)
  	VALUES(now(),now(),'lajecleey5@gmail.com', '$2a$10$XWsXQnCjR/2ZFes7CrTWUecupBBe3Z0bxJ.Fu7qBaEcMB57tfVg1a', 2);
+
+INSERT INTO weydi_activity_type(created_at, updated_at, name)
+	VALUES(now(), now(), 'question_asked'),
+		(now(), now(), 'answer_question'),
+		(now(), now(), 'comment_on'),
+		(now(), now(), 'reacted_to_question'),
+		(now(), now(), 'reacted_to_answer'),
+		(now(), now(), 'followed_question'),
+		(now(), now(), 'followed_topic');
