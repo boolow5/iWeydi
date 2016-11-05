@@ -9,14 +9,14 @@
           <li role='presentation'>
             <a class="head-brand-name" href="/"><img src="/static/icons/favicon-32x32.png" height="20px"> &nbsp; iWeydi</a>
           </li>
-          <li role='presentation' class='{{if eq .Title "home"}} active{{end}}'><a href="/">{{i18n $.Lang "home"}} <span class="badge">42</span></a></li>
+          <li role='presentation' class='{{if eq .Title "home"}} active{{end}}'><a href="/"> <i class="fa fa-home fa-fw" aria-hidden="true"></i> {{i18n $.Lang "home"}} <span class="badge">42</span></a></li>
           {{if .LoggedIn }}
-          <li role='presentation' class='{{if eq .Title "messages"}} active{{end}}'><a href="/messages">{{i18n $.Lang "messages"}} <span class="badge">3</span></a></li>
-          <li role='presentation' class='{{if eq .Title "notifications"}} active{{end}}'><a href="/notifactions">{{i18n $.Lang "notifications"}} <span class="badge">39</span></a></li>
+          <li role='presentation' class='{{if eq .Title "messages"}} active{{end}}'><a href="/messages"> <i class="fa fa-envelope fa-fw" aria-hidden="true"></i> {{i18n $.Lang "messages"}} <span class="badge">3</span></a></li>
+          <li role='presentation' class='{{if eq .Title "notifications"}} active{{end}}'><a href="/notifactions"> <i class="fa fa-bell fa-fw" aria-hidden="true"></i> {{i18n $.Lang "notifications"}} <span class="badge">39</span></a></li>
 
           <li role="presentation" class='{{if eq .Title "questions"}} active{{end}}'>
             <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-              {{i18n $.Lang "questions"}} <span class="badge">5</span>  <span class="caret"></span>
+               <i class="fa fa-question-circle fa-fw" aria-hidden="true"></i> {{i18n $.Lang "questions"}} <span class="badge">5</span>  <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
               <li role="presentation" class='{{if eq .Title "browse_questions"}} active{{end}}'><a href="/questions">{{i18n $.Lang "browse_questions"}}</a></li>
@@ -38,7 +38,7 @@
 
         <li role="presentation" class='{{if eq .Title "questions"}} active{{end}}'>
           <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-            {{i18n $.Lang "questions"}} <span class="badge">5</span>  <span class="caret"></span>
+            <i class="fa fa-question-circle fa-fw" aria-hidden="true"></i> {{i18n $.Lang "questions"}} <span class="badge">5</span>  <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
             <li role="presentation" class='{{if eq .Title "browse_questions"}} active{{end}}'><a href="/questions">{{i18n $.Lang "browse_questions"}}</a></li>
@@ -52,10 +52,10 @@
 
 
           {{if .LoggedIn }}
-          <li role='presentation' class='{{if eq .Title "notifications"}} active{{end}}'><a href="/notifactions">{{i18n $.Lang "notifications"}} <span class="badge">39</span></a></li>
-          <li role='presentation' class='{{if eq .Title "messages"}} active{{end}}'><a href="/messages">{{i18n $.Lang "messages"}} <span class="badge">3</span></a></li>
+          <li role='presentation' class='{{if eq .Title "notifications"}} active{{end}}'><a href="/notifactions"> <i class="fa fa-bell fa-fw" aria-hidden="true"></i> {{i18n $.Lang "notifications"}} <span class="badge">39</span></a></li>
+          <li role='presentation' class='{{if eq .Title "messages"}} active{{end}}'><a href="/messages"> <i class="fa fa-envelope fa-fw" aria-hidden="true"></i> {{i18n $.Lang "messages"}} <span class="badge">3</span></a></li>
           {{end}}
-          <li role='presentation pull-right' class="active"><a href="#">{{i18n $.Lang "home"}} <span class="badge">42</span></a></li>
+          <li role='presentation' class='{{if eq .Title "home"}} active{{end}}'><a href="/"> <i class="fa fa-home fa-fw" aria-hidden="true"></i> {{i18n $.Lang "home"}} <span class="badge">42</span></a></li>
 
           <li role='presentation'>
             <a class="head-brand-name" href="/"><img src="/static/icons/favicon-32x32.png" height="20px"> &nbsp; iWeydi</a>
@@ -68,7 +68,7 @@
         <ul class="nav nav-pills" role="tablist">
           <li role="presentation" class='dropdown{{if eq .Title "profile"}} active{{end}}'>
             <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-              {{if .LoggedIn }}{{ .FullName }}{{end}}{{if .NotLoggedIn}}{{i18n $.Lang "account"}}{{end}} <span class="caret"></span>
+              <i class="fa fa-user fa-fw" aria-hidden="true"></i> {{if .LoggedIn }}{{ .FullName }}{{end}}{{if .NotLoggedIn}}{{i18n $.Lang "account"}}{{end}} <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
               {{if .NotLoggedIn }}
@@ -84,34 +84,20 @@
 
 
 
-
-
-          {{range .RestLangs}}
-              <li><a href="javascript::" data-lang="{{.Lang}}" class="lang-changed">{{i18n $.Lang .Name}}</a></li>
-          {{end}}
+          <li role="presentation" class='dropdown{{if eq .Title "profile"}} active{{end}}'>
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+              <i class="fa fa-language fa-fw" aria-hidden="true"></i> {{i18n $.Lang "languages"}} <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              {{range .RestLangs}}
+                  <li><a href="javascript::" data-lang="{{.Lang}}" class="lang-changed"> {{i18n $.Lang .Name}}</a></li>
+              {{end}}
+            </ul>
+          </li>
 
         </ul>
 
       </li>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     </ul>
