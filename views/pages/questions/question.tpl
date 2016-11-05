@@ -9,10 +9,10 @@
       <p>{{.Question.Description}}</p>
       <hr/>
 
-
+      {{if $.CanAnswer }}
       <div class="a-item one-item-container">
-        <form method="POST" action="/api/answer" id="new-answer-form">
-
+        <form method="POST" action="/api/answer/{{.Question.Id}}" id="new-answer-form">
+          {{ .xsrfdata }}
 
             <!--<span class='input-group-addon form-control-arabic' id="basic-addon1">{{i18n .Lang "new_answer"}}</span>
             <input type="text" class="form-control form-control-arabic" name="text" placeholder='{{i18n .Lang "enter_answer_here"}}' id="answer-text-editor" aria-describedby="basic-addon1">
@@ -24,38 +24,48 @@
 
         </form>
       </div>
+      {{end}}
 
+      </div>
+      
       <h1>{{i18n $.Lang "answers"}}</h1>
 
-      {{range $val, $index := .Answers}}
+      {{range $index, $val := .Answers}}
 
       <div class="a-item one-item-container">
         <a href="#">
-          <img class='a-item-author-img{{if eq .Lang "ar-SA"}}-arabic{{end}}' src="/static/img/author.jpg">
+          <img class='a-item-author-img{{if eq $.Lang "ar-SA"}}-arabic{{end}}' src="/static/img/author.jpg">
         </a>
-        <h3>
-          <a href="#">
-            Question for this answer?
-          </a>
+
           <div class="a-item-header">
-            <a href="#">
-              <span class="a-item-author-name">Author Name</span>
-              <span class="a-item-author-description">I'm the author of this answer</span>
+            By: <a href="#">{{$val.Author }}</a>
+          </div>
+          <p>{{$val.Text | markdown}}</p>
+
+          <span>{{i18n $.Lang "time_written" }}:  {{dateformat $val.CreatedAt "02-01-06 15:04:05"}} </span>
+
+          <div class="btn-toolbar" role="group" aria-label="...">
+            <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-default answer-btn' href='/question/{{$val.Id}}'>
+              {{$val.LoveCount}}
+              <span class='counter-text'>| {{i18n $.Lang "loved_this"}}</span>
+            </a>
+            <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-default answer-btn' href='/question/{{$val.Id}}'>
+              {{$val.HateCount}}
+              <span class="counter-text">| {{i18n $.Lang "hated_this"}}</span>
+            </a>
+            <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-default answer-btn' href='/question/{{$val.Id}}'>
+              {{$val.CommentCount}}
+              <span class="counter-text">| {{i18n $.Lang "commented_on_this"}}</span>
             </a>
           </div>
-        </h3>
 
-        <p>The description of the answer will be layed out here the same as this text you're reading right now... <a href="#">read more!</a></p>
-        <span>{{i18n $.Lang "time_before_hours" 12}} </span>
-        <span class="counter-item">5 | {{i18n $.Lang "loved_this"}}</span>
-        <span class="counter-item">2 | {{i18n $.Lang "hated_this"}}</span>
-        <span class="counter-item">10 | {{i18n $.Lang "commented_on_this"}}</span>
+
       </div>
 
 
 
       {{end}}
-    </div>
+
 
   </div>
   <br>

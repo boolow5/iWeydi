@@ -5,63 +5,52 @@
 
 
   <div class="col-sm-7">
-    <br>
-    <h1>{{i18n $.Lang "questions"}}</h1>
+    <h1>{{i18n $.Lang .Title}}</h1>
     <div class="list-item-container q-list">
+    {{range $index, $val := .Feeds}}
+      <p> {{$val.Doer}} {{$val.ActivityType}}</p>
       <div class="one-item-container q-item">
-        <h3><a href="#">What did you asked in this question? Tell me more about the question then I will be able to answer?</a><a class="pull-right btn btn-primary answer-btn" href='/question/'>Answer</a></h3>
-        <p>The description of the question you asked will be layed out here the same as this text you're reading right now.</p>
-        <span>{{i18n $.Lang "time_before_hours" 1 }} </span>
-        <span class="counter-item">5 | {{i18n $.Lang "loved_this"}}</span>
-        <span class="counter-item">2 | {{i18n $.Lang "hated_this"}}</span>
-        <span class="counter-item">10 | {{i18n $.Lang "commented_on_this"}}</span>
-      </div>
-      <div class="one-item-container q-item">
-        <h3><a href="#">What did you asked in this question?</a></h3>
-        <p>The description of the question you asked will be layed out here the same as this text you're reading right now.</p>
-        <span>{{i18n $.Lang "time_before_hours" 5 }} </span>
-        <span class="counter-item">5 | {{i18n $.Lang "loved_this"}}</span>
-        <span class="counter-item">2 | {{i18n $.Lang "hated_this"}}</span>
-        <span class="counter-item">10 | {{i18n $.Lang "commented_on_this"}}</span>
-      </div>
-      <div class="one-item-container q-item">
-        <h3><a href="#">What did you asked in this question?</a></h3>
-        <p>The description of the question you asked will be layed out here the same as this text you're reading right now.</p>
-        <span>{{i18n $.Lang "time_before_hours" 2}} </span>
-        <span class="counter-item">5 | {{i18n $.Lang "loved_this"}}</span>
-        <span class="counter-item">2 | {{i18n $.Lang "hated_this"}}</span>
-        <span class="counter-item">10 | {{i18n $.Lang "commented_on_this"}}</span>
-      </div>
-    </div>
+        <strong></strong> {{i18n $.Lang "answered_this" $val.doer}}<br/>
+        <h3><a href="/question/{{$val.q_id}}">{{$val.question_text}}</a></h3>
+        <p>
+          {{$val.text}}
+        </p>
+        <span>{{i18n $.Lang "time_written" }}:  {{ $val.created_at}} </span>
 
-    <h1>{{i18n $.Lang "answers"}}</h1>
-    <div class="a-item one-item-container">
-      <a href="#">
-        <img class='a-item-author-img{{if eq .Lang "ar-SA"}}-arabic{{end}}' src="/static/img/author.jpg">
-      </a>
-      <h3>
-        <a href="#">
-          Question for this answer?
-        </a>
-        <div class="a-item-header">
-          <a href="#">
-            <span class="a-item-author-name">Author Name</span>
-            <span class="a-item-author-description">I'm the author of this answer</span>
+        <div class="btn-toolbar" role="group" aria-label="...">
+          <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-default answer-btn' href='/question/{{$val.q_id}}'>
+            {{$val.love_count}}
+            <span class='counter-text'>| {{i18n $.Lang "loved_this"}}</span>
+          </a>
+          <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-default answer-btn' href='/question/{{$val.q_id}}'>
+            {{$val.hate_count}}
+            <span class="counter-text">| {{i18n $.Lang "hated_this"}}</span>
+          </a>
+          <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-default answer-btn' href='/question/{{$val.q_id}}'>
+            {{$val.comment_count}}
+            <span class="counter-text">| {{i18n $.Lang "commented_on_this"}}</span>
+          </a>
+
+          <a class='{{if neq $.Lang "ar-SA"}}pull-right {{end}}btn btn-primary answer-btn' style='margin-right:1em;margin-left:1em;' href='/question/{{$val.q_id}}'>
+            {{ i18n $.Lang "answer_this"}}
           </a>
         </div>
-      </h3>
 
-      <p>The description of the answer will be layed out here the same as this text you're reading right now... <a href="#">read more!</a></p>
-      <span>{{i18n $.Lang "time_before_hours" 12}} </span>
-      <span class="counter-item">5 | {{i18n $.Lang "loved_this"}}</span>
-      <span class="counter-item">2 | {{i18n $.Lang "hated_this"}}</span>
-      <span class="counter-item">10 | {{i18n $.Lang "commented_on_this"}}</span>
+
+      </div>
+
+    {{end}}
     </div>
 
-    <br>
-
-
   </div>
+
+
+
+
+
+
+
+
   <br>
   {{template "partials/right-sidebar.tpl"}}
 </div>
