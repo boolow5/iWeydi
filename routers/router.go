@@ -33,6 +33,8 @@ func init() {
 
 	// ANSWERS
 	// API
+	beego.Router("/api/answer/:question_id", &controllers.AnswerAPIController{}, "post:PostAnswer")
+	beego.Router("/api/answer/:answer_id", &controllers.AnswerAPIController{}, "put:PutAnswer")
 	// NORMAL
 
 	// TOPICS
