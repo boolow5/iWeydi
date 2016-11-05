@@ -72,16 +72,7 @@ $("#login-form").submit(function(e){
         console.log(result);
         translate(result, ["#error"]);
       } else if (result["success"]) {
-        //$("#success").removeClass("hidden");
-        //$("#error").addClass("hidden");
-        /*translate(result, ["#success"]);
-        $("#form-container").html(
-            "<h3 id='login-message'></h3>"+
-            "<p id='login-message-long'></p>"
-          )
-          translate({"success":"login_success"}, ["#login-message"])
-          translate({"success":"login_message_long"}, ["#login-message-long"])
-        //$(window)[0].location.replace("http://localhost:8080")*/
+        $("#login-form").html('');
         document.location.reload();
       }
     }
@@ -106,18 +97,7 @@ $("#register-form").submit(function(e){
         //$("#error").html(message);
         translate(result, ["#error"]);
       } else if (result["success"]) {
-        //$("#success").removeClass("hidden");
-        //$("#error").addClass("hidden");
-        //$("#success").html(message);
-        //translate(result, ["#success", "#form-container"]);
-        /*
-        $("#form-container").html(
-            "<h3 id='register-message'></h3>"+
-            "<p id='register-message-long'></p>"
-          )
-          translate({"success":"register_success"}, ["#login-message"])
-          translate({"success":"register_message_long"}, ["#login-message-long"])
-          */
+        $("#register-form").html('');
         document.location.replace("/");
       }
     }
@@ -139,12 +119,41 @@ $("#question-form").submit(function(e){
     success: function(result) {
       if (result["error"]) {
         $("#error").removeClass("hidden");
+        $("#success").addClass("hidden");
+        console.log(result);
+        translate(result, ["#error"]);
+      } else if (result["success"]) {
+        $("#success").removeClass("hidden");
+        $("#error").addClass("hidden");
+        console.log(result);
+        translate(result, ["#success"]);
+        //document.location.reload();
+        //$("#question-form").html('');
+      }
+    }
+  })
+
+  //return false;
+});
+
+$("#new-answer-form").submit(function(e){
+  e.preventDefault();
+
+  $.ajax({
+    url: this.action,
+    type: this.method,
+    data: JSON.stringify(getFormData("new-answer-form")),
+    contentType: "application/json",
+    success: function(result) {
+      if (result["error"]) {
+        $("#error").removeClass("hidden");
         console.log(result);
         translate(result, ["#error"]);
       } else if (result["success"]) {
         $("#success").removeClass("hidden");
         console.log(result);
         translate(result, ["#success"]);
+        $("#new-answer-form").html('');
         //document.location.reload();
       }
     }
