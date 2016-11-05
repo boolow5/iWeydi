@@ -49,6 +49,8 @@ a.head-brand-name {
 }
 #top-row-header .container ul.nav li a:hover {
   border-bottom: 2px solid #000;
+  color: #A93;
+  text-shadow: none;
 }
 .arabic-menu-list {
   margin-right: -3em;
@@ -154,4 +156,18 @@ textarea
   border:1px solid #999999;
   margin:5px 0;
   padding:3px;
+}
+.a-item-header {
+  border: 1px solid #EEE;
+  margin-bottom: .5em;
+}
+.a-item-header img {
+  margin: 4px;
+  max-height: 4em;
+  border-radius: 15%;
+}
+.read-more-btn {
+  //float: right;
+  //margin: .5em;
+  //margin-top: -1em;
 }
