@@ -16,7 +16,7 @@ func (this *MainController) Home() {
 
 	feedItems := []orm.Params{}
 	o := orm.NewOrm()
-	o.Raw("SELECT * FROM answer_activity_view ORDER BY created_at DESC").Values(&feedItems, "id", "created_at", "updated_at", "text", "question_text", "user_id", "doer", "q_id", "comment_count", "love_count", "hate_count")
+	o.Raw("SELECT * FROM answer_activity_view ORDER BY id DESC").Values(&feedItems, "id", "created_at", "updated_at", "text", "question_text", "user_id", "doer", "q_id", "comment_count", "love_count", "hate_count")
 	fmt.Println("FEEDS COUNT: ", len(feedItems))
 
 	this.Data["Feeds"] = feedItems
