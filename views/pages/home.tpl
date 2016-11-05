@@ -11,24 +11,30 @@
       <p> {{$val.Doer}} {{$val.ActivityType}}</p>
       <div class="one-item-container q-item">
         <strong></strong> {{i18n $.Lang "answered_this" $val.doer}}<br/>
-        <h3><a href="/question/{{$val.q_id}}">{{$val.question_text}}</a></h3>
+
+        <div class="a-item-header">
+          <a href="#" class='{{if neq $.Lang "ar-SA"}}pull-right {{end}}{{if eq $.Lang "ar-SA"}}pull-left {{end}}'>
+            <img class='a-item-author-img{{if eq .Lang "ar-SA"}}-arabic{{end}}' src="/static/img/author.jpg">
+          </a>
+          <p> About the writer: Programmer and political scientist </p>
+          <h3><a href="/question/{{$val.q_id}}">{{$val.question_text}}</a></h3>
+        </div>
         <p>
-          {{$val.text}}
+          {{shorten_makrdown $val.text 120 }}
+          <a href="/answer/{{$val.answer_id}}" class="answer-btn read-more-btn">{{i18n $.Lang "read_more"}}</a>
         </p>
-        <span>{{i18n $.Lang "time_written" }}:  {{ $val.created_at}} </span>
+
+        <span> {{i18n $.Lang "time_written" }}:  {{$val.created_at}} </span>
 
         <div class="btn-toolbar" role="group" aria-label="...">
           <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-default answer-btn' href='/question/{{$val.q_id}}'>
-            {{$val.love_count}}
-            <span class='counter-text'>| {{i18n $.Lang "loved_this"}}</span>
+            <span>{{$val.love_count}}  <i class="fa fa-thumbs-o-up fa-fw" aria-hidden="true"></i></span>
           </a>
           <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-default answer-btn' href='/question/{{$val.q_id}}'>
-            {{$val.hate_count}}
-            <span class="counter-text">| {{i18n $.Lang "hated_this"}}</span>
+            <span>{{$val.hate_count}}  <i class="fa fa-thumbs-o-down fa-fw" aria-hidden="true"></i></span>
           </a>
           <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-default answer-btn' href='/question/{{$val.q_id}}'>
-            {{$val.comment_count}}
-            <span class="counter-text">| {{i18n $.Lang "commented_on_this"}}</span>
+            <span>{{$val.comment_count}} <i class="fa fa-comments fa-fw" aria-hidden="true"></i></span>
           </a>
 
           <a class='{{if neq $.Lang "ar-SA"}}pull-right {{end}}btn btn-primary answer-btn' style='margin-right:1em;margin-left:1em;' href='/question/{{$val.q_id}}'>
