@@ -19,6 +19,10 @@ func (this *UserController) GetProfile() {
 	this.Data["Title"] = "profile"
 	SetupCommonLayout("pages/user/profile.tpl", &this.Controller)
 
+	current_user := this.GetSession("current_user")
+	if current_user != nil {
+		this.Data["UserInfo"] = current_user.(map[string]interface{})
+	}
 }
 func (this *UserController) Register() {
 	if IsAuthenticated(&this.Controller) {
