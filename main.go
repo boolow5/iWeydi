@@ -1,11 +1,15 @@
 package main
 
 import (
+	"fmt"
+	"html/template"
+
 	"github.com/astaxie/beego"
 	"github.com/beego/i18n"
 	"github.com/boolow5/iWeydi/controllers"
 	"github.com/boolow5/iWeydi/g"
 	_ "github.com/boolow5/iWeydi/routers"
+	"github.com/slene/blackfriday"
 )
 
 func main() {
@@ -50,6 +54,11 @@ func main() {
 	})
 	beego.AddFuncMap("isNotZeroLen", func(a ...interface{}) bool {
 		return len(a) != 0
+	})
+
+	beego.AddFuncMap("markdown", func(args ...interface{}) template.HTML {
+		s := blackfriday.MarkdownCommon([]byte(fmt.Sprintf("%s", args...)))
+		return template.HTML(s)
 	})
 
 	beego.Run()
