@@ -7,7 +7,6 @@
     <div class="one-item-container">
       <p><strong>{{i18n $.Lang "description"}}:</strong></p>
       <p>{{.Question.Description}}</p>
-      <hr/>
 
       {{if $.CanAnswer }}
       <div class="a-item one-item-container">
@@ -27,22 +26,28 @@
       {{end}}
 
       </div>
-      
+
       <h1>{{i18n $.Lang "answers"}}</h1>
 
       {{range $index, $val := .Answers}}
 
       <div class="a-item one-item-container">
-        <a href="#">
-          <img class='a-item-author-img{{if eq $.Lang "ar-SA"}}-arabic{{end}}' src="/static/img/author.jpg">
-        </a>
-
+        
           <div class="a-item-header">
-            By: <a href="#">{{$val.Author }}</a>
+            <a href="#" class='{{if neq $.Lang "ar-SA"}}pull-right {{end}}{{if eq $.Lang "ar-SA"}}pull-left {{end}}'>
+              <img class='a-item-author-img{{if eq $.Lang "ar-SA"}}-arabic{{end}}' src="/static/img/author.jpg">
+            </a>
+            <p>By: <a href="#">{{$val.Author }}</a><br/>
+            <h3><a href="/question/{{$val.Question.Id}}">&nbsp;</a></h3>
           </div>
-          <p>{{$val.Text | markdown}}</p>
 
-          <span>{{i18n $.Lang "time_written" }}:  {{dateformat $val.CreatedAt "02-01-06 15:04:05"}} </span>
+          <p></p>
+          <p>
+            {{$val.Text | markdown}}
+          </p>
+
+
+          <span>{{i18n $.Lang "time_written" }}:  <a href="/answer/{{$val.Id}}" class="answer-btn read-more-btn">{{dateformat $val.CreatedAt "02-01-06 15:04:05"}}</a> </span>
 
           <div class="btn-toolbar" role="group" aria-label="...">
             <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-default answer-btn' href='/question/{{$val.Id}}'>
