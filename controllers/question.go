@@ -89,10 +89,15 @@ func (this *QuestionController) GetOneQuestion() {
 
 	question := models.Question{}
 	answers := []models.Answer{}
-	o.QueryTable("weydi_question").Filter("id", question_id).One(&question)
+	err = o.QueryTable("weydi_question").Filter("id", question_id).One(&question)
+	if err != nil {
+		this.Ctx.Abort(404, "Question not found")
+	}
+
 	o.QueryTable("weydi_answer").Filter("question_id__exact", question.Id).RelatedSel().All(&answers)
 
 	this.Data["CanAnswer"] = false
+	this.Data["CanNotAnswer"] = true
 	if IsAuthenticated(&this.Controller) {
 		sess_user := this.GetSession("current_user")
 
@@ -103,11 +108,13 @@ func (this *QuestionController) GetOneQuestion() {
 		for _, v := range answers {
 			if v.Author.Id == user_id {
 				this.Data["Answered"] = true
+				this.Data["CanNotAnswer"] = false
 				this.Data["YourAnswer"] = v
 			}
 		}
 		if this.Data["Answered"] == nil {
 			this.Data["CanAnswer"] = true
+			this.Data["CanNotAnswer"] = false
 		}
 	}
 
