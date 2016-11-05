@@ -90,7 +90,26 @@ func (this *QuestionController) GetOneQuestion() {
 	question := models.Question{}
 	answers := []models.Answer{}
 	o.QueryTable("weydi_question").Filter("id", question_id).One(&question)
-	o.QueryTable("weydi_answer").Filter("question_id__exact", question.Id)
+	o.QueryTable("weydi_answer").Filter("question_id__exact", question.Id).RelatedSel().All(&answers)
+
+	this.Data["CanAnswer"] = false
+	if IsAuthenticated(&this.Controller) {
+		sess_user := this.GetSession("current_user")
+
+		current_user := sess_user.(map[string]interface{})
+
+		user_id := current_user["id"].(int)
+
+		for _, v := range answers {
+			if v.Author.Id == user_id {
+				this.Data["Answered"] = true
+				this.Data["YourAnswer"] = v
+			}
+		}
+		if this.Data["Answered"] == nil {
+			this.Data["CanAnswer"] = true
+		}
+	}
 
 	this.Data["Question"] = question
 	this.Data["Answers"] = answers
