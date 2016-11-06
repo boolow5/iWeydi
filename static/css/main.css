@@ -77,7 +77,7 @@ img.a-item-author-img-arabic {
 
 .one-item-container h3{
   //background-color: #EEE;
-  background-color: rgba(50, 155, 50, 0.3);
+  //background-color: rgba(50, 155, 50, 0.3);
   margin:0;
   padding: .2em;
   padding-top: .1em;
@@ -166,6 +166,10 @@ textarea
   max-height: 4em;
   border-radius: 15%;
 }
+.a-item-header h3 {
+  background-color: rgba(50, 155, 50, 0.35);
+}
+
 .read-more-btn {
   //float: right;
   //margin: .5em;
