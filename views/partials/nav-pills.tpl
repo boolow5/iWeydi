@@ -84,7 +84,7 @@
 
 
 
-          <li role="presentation" class='dropdown{{if eq .Title "profile"}} active{{end}}'>
+          <li role="presentation" class='dropdown'>
             <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
               <i class="fa fa-language fa-fw" aria-hidden="true"></i> {{i18n $.Lang "languages"}} <span class="caret"></span>
             </a>
