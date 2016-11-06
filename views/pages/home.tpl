@@ -21,24 +21,24 @@
         </div>
         <p>
           {{shorten_makrdown $val.text 120 }}
-          <a href="/answer/{{$val.answer_id}}" class="answer-btn read-more-btn">{{i18n $.Lang "read_more"}}</a>
+          <a href="/answer/{{$val.id}}" class="answer-btn read-more-btn">{{i18n $.Lang "read_more"}}</a>
         </p>
 
-        <span> {{i18n $.Lang "time_written" }}:  {{$val.created_at}} </span>
+        <span> {{i18n $.Lang "time_written" }}:  <a href="/answer/{{$val.id}}">{{$val.created_at}}</a> </span>
 
         <div class="btn-toolbar" role="group" aria-label="...">
-          <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-default answer-btn' href='/question/{{$val.q_id}}'>
-            <span>{{$val.love_count}}  <i class="fa fa-thumbs-o-up fa-fw" aria-hidden="true"></i></span>
+          <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-success answer-btn' href='/question/{{$val.q_id}}'>
+            <span>{{$val.love_count}}  <i class="fa fa-thumbs-up fa-fw" aria-hidden="true"></i></span>
           </a>
-          <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-default answer-btn' href='/question/{{$val.q_id}}'>
-            <span>{{$val.hate_count}}  <i class="fa fa-thumbs-o-down fa-fw" aria-hidden="true"></i></span>
+          <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-danger answer-btn' href='/question/{{$val.q_id}}'>
+            <span>{{$val.hate_count}}  <i class="fa fa-thumbs-down fa-fw" aria-hidden="true"></i></span>
           </a>
-          <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-default answer-btn' href='/question/{{$val.q_id}}'>
+          <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info answer-btn' href='/question/{{$val.q_id}}'>
             <span>{{$val.comment_count}} <i class="fa fa-comments fa-fw" aria-hidden="true"></i></span>
           </a>
 
-          <a class='{{if neq $.Lang "ar-SA"}}pull-right {{end}}btn btn-primary answer-btn' style='margin-right:1em;margin-left:1em;' href='/question/{{$val.q_id}}'>
-            {{ i18n $.Lang "answer_this"}}
+          <a class='{{if neq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info answer-btn' style='margin-right:1em;margin-left:1em;' href='/question/{{$val.q_id}}'>
+            {{ i18n $.Lang "answer_this"}} <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
           </a>
         </div>
 
