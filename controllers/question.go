@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/astaxie/beego/orm"
+	"github.com/beego/i18n"
 	"github.com/boolow5/iWeydi/models"
 )
 
@@ -91,7 +92,8 @@ func (this *QuestionController) GetOneQuestion() {
 	answers := []models.Answer{}
 	err = o.QueryTable("weydi_question").Filter("id", question_id).One(&question)
 	if err != nil {
-		this.Ctx.Abort(404, "Question not found")
+		lang := this.Data["Lang"].(string)
+		this.Ctx.Abort(404, i18n.Tr(lang, "question_not_found"))
 	}
 
 	o.QueryTable("weydi_answer").Filter("question_id__exact", question.Id).RelatedSel().All(&answers)
