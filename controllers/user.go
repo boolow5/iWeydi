@@ -16,6 +16,9 @@ type UserController struct {
 }
 
 func (this *UserController) GetProfile() {
+	if !IsAuthenticated(&this.Controller) {
+		this.Redirect("/user/login", 302)
+	}
 	this.Data["Title"] = "profile"
 	SetupCommonLayout("pages/user/profile.tpl", &this.Controller)
 
