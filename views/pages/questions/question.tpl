@@ -32,7 +32,7 @@
       {{range $index, $val := .Answers}}
 
       <div class="a-item one-item-container">
-        
+
           <div class="a-item-header">
             <a href="#" class='{{if neq $.Lang "ar-SA"}}pull-right {{end}}{{if eq $.Lang "ar-SA"}}pull-left {{end}}'>
               <img class='a-item-author-img{{if eq $.Lang "ar-SA"}}-arabic{{end}}' src="/static/img/author.jpg">
@@ -50,17 +50,14 @@
           <span>{{i18n $.Lang "time_written" }}:  <a href="/answer/{{$val.Id}}" class="answer-btn read-more-btn">{{dateformat $val.CreatedAt "02-01-06 15:04:05"}}</a> </span>
 
           <div class="btn-toolbar" role="group" aria-label="...">
-            <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-default answer-btn' href='/question/{{$val.Id}}'>
-              {{$val.LoveCount}}
-              <span class='counter-text'>| {{i18n $.Lang "loved_this"}}</span>
+            <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-success answer-btn' href='/question/{{$val.Id}}'>
+              <span>{{$val.LoveCount}} <i class="fa fa-thumbs-up fa-fw" aria-hidden="true"></i></span>
             </a>
-            <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-default answer-btn' href='/question/{{$val.Id}}'>
-              {{$val.HateCount}}
-              <span class="counter-text">| {{i18n $.Lang "hated_this"}}</span>
+            <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-danger answer-btn' href='/question/{{$val.Id}}'>
+              <span>{{$val.HateCount}} <i class="fa fa-thumbs-down fa-fw" aria-hidden="true"></i></span>
             </a>
-            <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-default answer-btn' href='/question/{{$val.Id}}'>
-              {{$val.CommentCount}}
-              <span class="counter-text">| {{i18n $.Lang "commented_on_this"}}</span>
+            <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info answer-btn' href='/question/{{$val.Id}}'>
+              <span>{{$val.CommentCount}} <i class="fa fa-comments fa-fw" aria-hidden="true"></i></span>
             </a>
           </div>
 
