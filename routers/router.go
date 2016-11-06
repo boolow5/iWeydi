@@ -36,12 +36,9 @@ func init() {
 	beego.Router("/api/answer/:question_id", &controllers.AnswerAPIController{}, "post:PostAnswer")
 	beego.Router("/api/answer/:answer_id", &controllers.AnswerAPIController{}, "put:PutAnswer")
 	// NORMAL
+	beego.Router("/answer/:id", &controllers.AnswerController{}, "get:GetAnswer")
 
 	// TOPICS
-	// API
-	// NORMAL
-
-	// QUESTION
 	// API
 	// NORMAL
 
