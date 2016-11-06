@@ -69,12 +69,11 @@ func ReporError(errMessage string, controller *beego.Controller) {
 }
 
 func IsAuthenticated(this *beego.Controller) bool {
-	sess_user := this.GetSession("current_user")
-	fmt.Println("******************** CURRENT USER *************************")
-	fmt.Println(sess_user)
-	if sess_user == nil {
+	current_user := this.GetSession("current_user")
+	if current_user == nil {
 		return false
 	}
+
 	return true
 }
 
