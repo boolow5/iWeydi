@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"net/http"
 	"strings"
 
 	"github.com/astaxie/beego"
@@ -14,6 +15,7 @@ import (
 )
 
 func main() {
+
 	g.InitEnv()
 	controllers.InitLocales()
 	/*
@@ -82,4 +84,13 @@ func main() {
 	})
 
 	beego.Run()
+}
+
+// ERROR HANDLERS
+func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("404 - NOT FOUND"))
+}
+
+func InternalErrorHandler(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("500 - INTERNAL ERROR"))
 }
