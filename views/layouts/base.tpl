@@ -38,7 +38,7 @@
 
     <!-- Bootstrap -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="static/font-awesome-4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/static/font-awesome-4.4.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="/static/css/main.css" rel="stylesheet">
 
     <script src="/static/js/jquery-2.1.1.js"></script>
