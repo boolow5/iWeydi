@@ -44,7 +44,7 @@ func init() {
 
 	// LIKES
 	// API
-	beego.Router("/api/reaction/:answer_id", &controllers.ReactionAPIController{}, "get:PostAnswerReaction")
+	beego.Router("/api/reaction/:item_id/:postive", &controllers.ReactionAPIController{}, "get:PostAnswerReaction")
 
 	// FOLLOW
 	// API
