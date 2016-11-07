@@ -45,10 +45,11 @@ type Like struct {
 	Id      int  `json:"id" orm:"auto"`
 	Postive bool `json:"positive" orm:"positive;default(true)"`
 
-	User     *User     `json:"user" orm:"null;rel(fk);on_delete(cascade)"`
-	Question *Question `json:"question" orm:"null;rel(fk);on_delete(cascade)"`
-	Answer   *Answer   `json:"answer" orm:"null;rel(fk);on_delete(cascade)"`
-	Comment  *Comment  `json:"question_comment" orm:"null;rel(fk);on_delete(cascade)"`
+	User          *User     `json:"user" orm:"null;rel(fk);on_delete(cascade)"`
+	Question      *Question `json:"question" orm:"null;rel(fk);on_delete(cascade)"`
+	Answer        *Answer   `json:"answer" orm:"null;rel(fk);on_delete(cascade)"`
+	Comment       *Comment  `json:"question_comment" orm:"null;rel(fk);on_delete(cascade)"`
+	ReactionLevel int       `json:"reaction_level" orm:"default(0)"`
 }
 
 func (l *Like) TableName() string {
