@@ -39,6 +39,25 @@ CREATE OR REPLACE VIEW answer_activity_view AS
 
 /*                               2. Function Declarations                                 */
 /******************************************************************************************/
+-- ||###############################################################################||
+-- ||	this function is used to update counter field in the question/answer table  ||
+-- ||	it will be envoked when new like is inserted or updated.		    ||
+-- ||###############################################################################||
+CREATE OR REPLACE FUNCTION answer_likes_counter_update(answer_id integer, question_id integer) RETURNS void AS $likes_counter$
+BEGIN
+	IF $1 IS NOT NULL THEN
+		UPDATE weydi_answer 
+		SET 	love_count = (SELECT COUNT(id) FROM weydi_user_likes L WHERE postive = true AND L.answer_id = $1), 
+			hate_count = (SELECT COUNT(id) FROM weydi_user_likes L WHERE postive = true AND L.answer_id = $1)
+		WHERE id = $1;
+	ELSIF $2 IS NOT NULL THEN
+		UPDATE weydi_question
+		SET 	love_count = (SELECT COUNT(id) FROM weydi_user_likes L WHERE postive = true AND L.question_id = $1), 
+			hate_count = (SELECT COUNT(id) FROM weydi_user_likes L WHERE postive = true AND L.question_id = $1)
+		WHERE id = $1;
+	END IF;
+END;
+$likes_counter$ LANGUAGE plpgsql;
 
 
 
@@ -79,20 +98,25 @@ EXECUTE PROCEDURE tg_log_answer_activities();
 -----------------------------------------------------------------------------------------------
 
 -- TRIGGER FUNCTION FOR ACTIVITY LOG LIKES COUNT UPDATE
-CREATE OR REPLACE FUNCTION tg_update_likes() RETURNS trigger AS $likes_trigger$
+/*CREATE OR REPLACE FUNCTION tg_update_likes() RETURNS trigger AS $likes_trigger$
 BEGIN
 	IF NEW.question_id IS NOT NULL THEN
-		UPDATE weydi_question SET love_count = (SELECT (SELECT COUNT(id) FROM weydi_user_likes WHERE question_id = NEW.id AND postive = true) AS bigint)
+		UPDATE weydi_question 
+		SET love_count = (SELECT (SELECT COUNT(id) FROM weydi_user_likes WHERE question_id = NEW.id AND postive = true),
+			hate_count = (SELECT (SELECT COUNT(id) FROM weydi_user_likes WHERE question_id = NEW.id AND postive = false)
 		WHERE id = NEW.question_id;
 	ELSIF NEW.answer_id IS NOT NULL THEN
-		UPDATE weydi_answer SET love_count = (SELECT (SELECT COUNT(id) FROM weydi_user_likes WHERE answer_id = NEW.id AND postive = true) AS bigint)
-		WHERE id = NEW.question_id;
+		UPDATE weydi_answer SET love_count = (SELECT COUNT(id) FROM weydi_user_likes WHERE answer_id = NEW.id AND postive = true),
+			hate_count = (SELECT COUNT(id) FROM weydi_user_likes WHERE answer_id = NEW.id AND postive = false)
+		WHERE id = NEW.answer_id;
 
 	ELSIF NEW.question_comment_id IS NOT NULL THEN
-		UPDATE weydi_question_comment SET love_count = (SELECT (SELECT COUNT(id) FROM weydi_user_likes WHERE question_comment_id = NEW.id AND postive = true) AS bigint)
+		UPDATE weydi_question_comment SET love_count = (SELECT COUNT(id) FROM weydi_user_likes WHERE question_comment_id = NEW.id AND postive = true),
+			hate_count = (SELECT COUNT(id) FROM weydi_user_likes WHERE question_comment_id = NEW.id AND postive = false)
 		WHERE id = NEW.question_comment_id;
 	ELSIF NEW.answer_comment_id IS NOT NULL THEN
-		UPDATE weydi_answer_comment SET love_count = (SELECT (SELECT COUNT(id) FROM weydi_user_likes WHERE answer_comment_id = NEW.id AND postive = true) AS bigint)
+		UPDATE weydi_answer_comment SET love_count = (SELECT COUNT(id) FROM weydi_user_likes WHERE answer_comment_id = NEW.id AND postive = true),
+			hate_count = (SELECT COUNT(id) FROM weydi_user_likes WHERE answer_comment_id = NEW.id AND postive = false)
 		WHERE id = NEW.question_comment_id;
 	END IF;
 	RETURN NEW;
@@ -100,9 +124,9 @@ END;
 $likes_trigger$ LANGUAGE plpgsql;
 -- TRIGGER FOR ACTIVITY LOG LIKES COUNT UPDATE
 CREATE TRIGGER activity_log_trigger
-AFTER INSERT ON weydi_user_likes
+AFTER INSERT OR UPDATE ON weydi_user_likes
 FOR EACH ROW
-EXECUTE PROCEDURE tg_update_likes();
+EXECUTE PROCEDURE tg_update_likes();*/
 -----------------------------------------------------------------------------------------------------------------
 
 
@@ -135,9 +159,10 @@ BEGIN
 			rows := 1;
 			inserted_new := true;
 		END IF;
+		PERFORM answer_likes_counter_update(NULL, question);
 	ELSIF answer IS NOT NULL THEN
-		SELECT id INTO item_id FROM weydi_user_likes
-		WHERE answer_id = $4 AND L.user_id = $2
+		SELECT id INTO item_id FROM weydi_user_likes L
+		WHERE L.answer_id = $4 AND L.user_id = $2
 		LIMIT 1;
 		--RAISE NOTICE 'Answer_like id %s' item_id;
 		RAISE NOTICE 'Answer_like id, % ', item_id;
@@ -154,6 +179,7 @@ BEGIN
 			rows := 1;
 			inserted_new := true;
 		END IF;
+		PERFORM answer_likes_counter_update(answer, NULL);
 	ELSE
 		RAISE NOTICE 'Nothing to like, because all are null';
 	END IF;
