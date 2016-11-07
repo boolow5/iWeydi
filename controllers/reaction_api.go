@@ -32,28 +32,48 @@ func (this *ReactionAPIController) PostAnswerReaction() {
 		return
 	}
 	// 1. get answer id
-	answer_id, err := strconv.Atoi(this.Ctx.Input.Param(":answer_id"))
-	if answer_id < 1 || err != nil {
-		this.Data["json"] = map[string]interface{}{"error": "invalid_answer_id"}
+	item_id, err := strconv.Atoi(this.Ctx.Input.Param(":item_id"))
+	if item_id < 1 || err != nil {
+		this.Data["json"] = map[string]interface{}{"error": "invalid_item_id"}
 		this.ServeJSON()
 		return
 	}
 	// 3. set Like properties
-	answer_reaction := models.Like{}
-	postive, err := strconv.ParseBool(this.Ctx.Input.Query("postive"))
+	item_reaction := models.Like{}
+	postive, err := strconv.ParseBool(this.Ctx.Input.Param(":item_id"))
 	if err != nil {
 		this.Data["json"] = map[string]interface{}{"error": "unknown_reaction_type"}
 		this.ServeJSON()
 		return
 	}
-	answer_reaction.Postive = postive
-	answer_reaction.User = &models.User{Id: user_id}
-	answer_reaction.Answer = &models.Answer{Id: answer_id}
+	item_reaction.Postive = postive
+	item_reaction.User = &models.User{Id: user_id}
+
+	o := orm.NewOrm()
 
 	// 2. insert like with ordirany orm
-	o := orm.NewOrm()
-	//row_count, err := o.Insert(&answer_reaction)
-	_, err = o.Raw("SELECT insert_like( ?, ? , NULL, ?)", postive, user_id, answer_id).Exec()
+
+	//row_count, err := o.Insert(&item_reaction)
+	item_type, err := strconv.Atoi(this.Ctx.Input.Query("ir_t")) // item reaction type: 1. question, 2. answer, 3. comment
+	if err != nil || (item_type < 1 AND item_type > 3) {
+		this.Data["json"] = map[string]interface{}{"error": "unknown_reaction_item_type", "reason": err}
+		this.ServeJSON()
+		return
+	}
+	var rawsetter orm.RawSeter
+	if item_type == 1 {
+		item_reaction.Question = &models.Question{Id: item_id}
+		rawsetter = o.Raw("SELECT insert_like( ?, ? , ?, NULL , NULL )", postive, user_id, item_id)
+	} else if item_type == 2 {
+		item_reaction.Answer = &models.Answer{Id: item_id}
+		rawsetter = o.Raw("SELECT insert_like( ?, ? , NULL, ? , NULL)", postive, user_id, item_id)
+	} else if item_type == 3 {
+		item_reaction.Comment = &models.Comment{Id: item_id}
+		rawsetter = o.Raw("SELECT insert_like( ?, ? , NULL, NULL, ? )", postive, user_id, item_id)
+	}
+
+
+	_, err = rawsetter.Exec()
 
 	if err != nil {
 		this.Data["json"] = map[string]interface{}{"error": "couldnt_save_reaction", "reason": err.Error()}
