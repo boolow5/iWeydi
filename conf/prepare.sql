@@ -10,6 +10,8 @@
 
 /*                              1. Table Declarations.                                    */
 /******************************************************************************************/
+ALTER TABLE IF EXISTS weydi_user_likes ADD COLUMN reaction_level INTEGER NOT NULL DEFAULT 0;
+
 
 
 
@@ -17,6 +19,8 @@
 CREATE OR REPLACE VIEW user_view AS
 	SELECT U.id, U.email, U.created_at, P.first_name, P.last_name, P.avatar_url, P.likes, P.answer_count, question_count FROM weydi_auth_user U
 		LEFT JOIN weydi_user_profile P ON U.profile_id = P.id;
+
+GRANT ALL PRIVILEGES ON TABLE user_view TO mahdi;
 
 CREATE OR REPLACE VIEW answer_view AS
 	SELECT 	A.id AS q_id, Q.created_at AS q_created_at, Q.text AS q_text, Q.text_id AS q_text_id, Q.description AS q_description,
@@ -26,15 +30,30 @@ CREATE OR REPLACE VIEW answer_view AS
 	FROM weydi_question Q
 		LEFT JOIN weydi_answer A ON Q.id = A.question_id;
 
-CREATE OR REPLACE VIEW answer_activity_view AS
+GRANT ALL PRIVILEGES ON TABLE answer_view TO mahdi;
+
+/************************* Replaced with the below view *********************************************/
+/*CREATE OR REPLACE VIEW answer_activity_view AS
 	SELECT AN.*, Q.id AS question_id, Q.text AS question_text, U.id AS user_id, concat(P.first_name, ' ', P.last_name) AS Doer  FROM weydi_user_activity A
+		INNER JOIN weydi_activity_type T ON A.type_id = T.id
+		INNER JOIN weydi_answer AN ON A.item_id = AN.id AND A.type_id = 2
+		INNER JOIN weydi_question Q ON AN.question_id = Q.id
+		INNER JOIN weydi_auth_user U ON AN.author_id = U.id
+		INNER JOIN weydi_user_profile P ON P.id = U.profile_id;*/
+		
+CREATE OR REPLACE VIEW answer_activity_view AS 
+	SELECT AN.id, to_char(AN.created_at, 'dd-mm-yyyy HH12:MIam') AS created_at, 
+		to_char(AN.updated_at, 'dd-mm-yyyy HH12:MIam') AS updated_at, AN.text, P.avatar_url,
+		AN.love_count, AN.hate_count, AN.comment_count, AN.question_id AS q_id,
+		Q.text AS question_text, U.id AS user_id, concat(P.first_name, ' ', P.last_name) AS Doer  
+	FROM weydi_user_activity A
 		INNER JOIN weydi_activity_type T ON A.type_id = T.id
 		INNER JOIN weydi_answer AN ON A.item_id = AN.id AND A.type_id = 2
 		INNER JOIN weydi_question Q ON AN.question_id = Q.id
 		INNER JOIN weydi_auth_user U ON AN.author_id = U.id
 		INNER JOIN weydi_user_profile P ON P.id = U.profile_id;
 
-
+GRANT ALL PRIVILEGES ON TABLE answer_activity_view TO mahdi;
 
 
 /*                               2. Function Declarations                                 */
@@ -43,7 +62,7 @@ CREATE OR REPLACE VIEW answer_activity_view AS
 -- ||	this function is used to update counter field in the question/answer table  ||
 -- ||	it will be envoked when new like is inserted or updated.		    ||
 -- ||###############################################################################||
-CREATE OR REPLACE FUNCTION answer_likes_counter_update(answer_id integer, question_id integer) RETURNS void AS $likes_counter$
+CREATE OR REPLACE FUNCTION answer_likes_counter_update(answer_id integer, question_id integer, comment_id integer) RETURNS void AS $likes_counter$
 BEGIN
 	IF $1 IS NOT NULL THEN
 		UPDATE weydi_answer 
@@ -54,6 +73,11 @@ BEGIN
 		UPDATE weydi_question
 		SET 	love_count = (SELECT COUNT(id) FROM weydi_user_likes L WHERE postive = true AND L.question_id = $1), 
 			hate_count = (SELECT COUNT(id) FROM weydi_user_likes L WHERE postive = true AND L.question_id = $1)
+		WHERE id = $1;
+	ELSIF $3 IS NOT NULL THEN 
+		UPDATE weydi_user_comment
+		SET 	love_count = (SELECT COUNT(id) FROM weydi_user_likes L WHERE postive = true AND L.comment_id = $1), 
+			hate_count = (SELECT COUNT(id) FROM weydi_user_likes L WHERE postive = true AND L.comment_id = $1)
 		WHERE id = $1;
 	END IF;
 END;
@@ -75,6 +99,7 @@ END;
 $question_trigger$ LANGUAGE plpgsql;
 
 -- TRIGGER FOR ACTIVITY LOG
+DROP TRIGGER IF EXISTS activity_log_trigger ON weydi_question;
 CREATE TRIGGER activity_log_trigger
 AFTER INSERT ON weydi_question
 FOR EACH ROW
@@ -91,6 +116,7 @@ BEGIN
 END;
 $answer_trigger$ LANGUAGE plpgsql;
 -- TRIGGER FOR ACTIVITY LOG
+DROP TRIGGER IF EXISTS activity_log_trigger ON weydi_answer;
 CREATE TRIGGER activity_log_trigger
 AFTER INSERT ON weydi_answer
 FOR EACH ROW
@@ -134,7 +160,7 @@ EXECUTE PROCEDURE tg_update_likes();*/
 -- #######################################\
 -- -- ###################################### INSERT LIKE FUNCTION
 -- ######################################/
-CREATE OR REPLACE FUNCTION insert_like(positive boolean, user_id integer, question integer, answer integer, OUT rows bigint, OUT inserted_new boolean) AS $like_trigger$
+CREATE OR REPLACE FUNCTION insert_like(positive boolean, user_id integer, question integer, answer integer, comment integer, OUT rows bigint, OUT inserted_new boolean) AS $like_trigger$
 DECLARE
 	available_rows bigint;
 	item_id bigint;
@@ -159,7 +185,7 @@ BEGIN
 			rows := 1;
 			inserted_new := true;
 		END IF;
-		PERFORM answer_likes_counter_update(NULL, question);
+		PERFORM answer_likes_counter_update(NULL, question, NULL);
 	ELSIF answer IS NOT NULL THEN
 		SELECT id INTO item_id FROM weydi_user_likes L
 		WHERE L.answer_id = $4 AND L.user_id = $2
@@ -179,7 +205,33 @@ BEGIN
 			rows := 1;
 			inserted_new := true;
 		END IF;
-		PERFORM answer_likes_counter_update(answer, NULL);
+		PERFORM answer_likes_counter_update(answer, NULL, NULL);
+
+
+	-- COMMENT ADDED LATER
+	ELSIF comment IS NOT NULL THEN
+		SELECT id INTO item_id FROM weydi_user_likes L
+		WHERE L.comment_id = $4 AND L.user_id = $2
+		LIMIT 1;
+		--RAISE NOTICE 'Answer_like id %s' item_id;
+		RAISE NOTICE 'Comment_like id, % ', item_id;
+		IF item_id > 0 THEN
+			RAISE NOTICE 'Updating comment_like';
+			UPDATE weydi_user_likes SET postive = $1
+			WHERE id = item_id; --answer_id = $4 AND postive != $1;
+			rows := item_id;
+			inserted_new := false;
+		ELSE
+			RAISE NOTICE 'Inserting new comment_like';
+			INSERT INTO weydi_user_likes(comment_id, user_id, postive)
+				VALUES($5, $2, $1);
+			rows := 1;
+			inserted_new := true;
+		END IF;
+		PERFORM answer_likes_counter_update(NULL, NULL, comment);
+
+	
+	
 	ELSE
 		RAISE NOTICE 'Nothing to like, because all are null';
 	END IF;
@@ -191,7 +243,7 @@ $like_trigger$ LANGUAGE plpgsql;
 /******************************************************************************************/
  -- insert two users Mahdi and Muno
 
-
+/*
  INSERT INTO weydi_user_profile(created_at, updated_at, first_name, last_name, avatar_url)
 	VALUES(now(), now(), 'Mahdi', 'Bolow', 'https://github.com/boolow5.png');
 INSERT INTO weydi_user_profile(created_at, updated_at, first_name, last_name, avatar_url)
@@ -211,3 +263,4 @@ INSERT INTO weydi_activity_type(created_at, updated_at, name)
 		(now(), now(), 'reacted_to_answer'),
 		(now(), now(), 'followed_question'),
 		(now(), now(), 'followed_topic');
+*/
