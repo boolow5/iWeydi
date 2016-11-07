@@ -40,7 +40,7 @@ func (this *ReactionAPIController) PostAnswerReaction() {
 	}
 	// 3. set Like properties
 	item_reaction := models.Like{}
-	postive, err := strconv.ParseBool(this.Ctx.Input.Param(":item_id"))
+	postive, err := strconv.ParseBool(this.Ctx.Input.Param(":postive"))
 	if err != nil {
 		this.Data["json"] = map[string]interface{}{"error": "unknown_reaction_type"}
 		this.ServeJSON()
@@ -55,7 +55,7 @@ func (this *ReactionAPIController) PostAnswerReaction() {
 
 	//row_count, err := o.Insert(&item_reaction)
 	item_type, err := strconv.Atoi(this.Ctx.Input.Query("ir_t")) // item reaction type: 1. question, 2. answer, 3. comment
-	if err != nil || (item_type < 1 AND item_type > 3) {
+	if err != nil || (item_type < 1 && item_type > 3) {
 		this.Data["json"] = map[string]interface{}{"error": "unknown_reaction_item_type", "reason": err}
 		this.ServeJSON()
 		return
@@ -72,7 +72,6 @@ func (this *ReactionAPIController) PostAnswerReaction() {
 		rawsetter = o.Raw("SELECT insert_like( ?, ? , NULL, NULL, ? )", postive, user_id, item_id)
 	}
 
-
 	_, err = rawsetter.Exec()
 
 	if err != nil {
@@ -82,7 +81,18 @@ func (this *ReactionAPIController) PostAnswerReaction() {
 	}
 	// 3. get sum of likes hates and send it as json
 	hate_love := []orm.Params{}
-	o.Raw("SELECT (SELECT COUNT(id) FROM weydi_user_likes WHERE postive = true AND answer_id = ?) AS love_count, (SELECT COUNT(id) FROM weydi_user_likes WHERE postive = false AND answer_id = ?) AS hate_count;", answer_id, answer_id).Values(&hate_love)
-	this.Data["json"] = map[string]interface{}{"reactions": hate_love}
+	o.Raw("SELECT (SELECT COUNT(id) FROM weydi_user_likes WHERE postive = true AND answer_id = ?) AS love_count, (SELECT COUNT(id) FROM weydi_user_likes WHERE postive = false AND answer_id = ?) AS hate_count;", item_id, item_id).Values(&hate_love)
+	it := "none"
+	if item_type == 1 {
+		it = "question"
+	}
+	if item_type == 2 {
+		it = "answer"
+	}
+	if item_type == 3 {
+		it = "answer"
+	}
+
+	this.Data["json"] = map[string]interface{}{"reactions": hate_love, "your_reaction_type": postive, "item_type": it}
 	this.ServeJSON()
 }
