@@ -132,8 +132,35 @@ $("#question-form").submit(function(e){
       }
     }
   })
+});
 
-  //return false;
+$(".reaction-btn").on("click", function (e) {
+  e.preventDefault();
+  var reaction_type = $(this).data('rtype');
+  var btn_type = $(this).data('btype');
+  var item_id = parseInt($(this).data('oid'));
+  var item_type = parseInt($(this).data('irt'));
+
+  if (reaction_type != 'undefined' && item_id != undefined) {
+    var url = "/api/reaction/"+item_id+"/"+reaction_type+"?ir_t="+item_type;
+    //var counter = parseInt($(this).children().first().html());
+    //$(this).children().first().html(counter+1);
+    var likeCounterId = "#"+item_id+"-like-counter";
+    var dislikeCounter = "#"+item_id+"-dislike-counter";
+    $.ajax({
+      url: url,
+      type: "POST",
+      contentType: "application/json",
+      success: function(result) {
+        var reactions = result["reactions"][0];
+        if (reactions != 'undefined') {
+          $(this).prop("disabled",true);
+          $(likeCounterId).html(reactions["love_count"]);
+          $(dislikeCounter).html(reactions["hate_count"])
+        }
+      }
+    })
+  }
 });
 
 $("#new-answer-form").submit(function(e){
