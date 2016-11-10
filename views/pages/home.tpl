@@ -26,17 +26,31 @@
 
         <span> {{i18n $.Lang "time_written" }}:  <a href="/answer/{{$val.id}}">{{$val.created_at}}</a> </span>
 
-        <div class="btn-toolbar" role="group" aria-label="...">
+        <div class="btn-toolbar" role="group" aria-label="reaction area">
           <a class='reaction-btn {{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-success answer-btn'
-            href='#' data-rtype="1" data-oid="{{$val.id}}" data-btype="+" data-irt="2">
-            <span id="{{$val.id}}-like-counter">{{$val.love_count}}</span>  <i class="fa fa-thumbs-up fa-fw" aria-hidden="true"></i>
+            href='#' data-rtype="1" data-oid="{{$val.id}}"
+            data-btype="+" data-irt="2" data-opposite="{{$val.id}}-dislike-counter"
+            data-myid="{{$val.id}}-like-counter">
+            <span id="{{$val.id}}-like-counter">
+              {{$val.love_count}}
+            </span>
+            <i class="fa fa-thumbs-up fa-fw" aria-hidden="true"></i>
           </a>
           <a class='reaction-btn {{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-danger answer-btn'
-            href='#' data-rtype="0" data-oid="{{$val.id}}" data-btype="-" data-irt="2">
-            <span id="{{$val.id}}-dislike-counter">{{$val.hate_count}}</span>  <i class="fa fa-thumbs-down fa-fw" aria-hidden="true"></i>
+            href='#' data-rtype="0" data-oid="{{$val.id}}"
+            data-btype="-" data-irt="2"
+            data-myid="{{$val.id}}-dislike-counter"
+            data-opposite="{{$val.id}}-like-counter">
+            <span id="{{$val.id}}-dislike-counter">
+              {{$val.hate_count}}
+            </span>
+            <i class="fa fa-thumbs-down fa-fw" aria-hidden="true"></i>
           </a>
           <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info answer-btn' href='/question/{{$val.q_id}}'>
-            <span>{{$val.comment_count}} <i class="fa fa-comments fa-fw" aria-hidden="true"></i></span>
+            <span>
+              {{$val.comment_count}}
+            </span>
+            <i class="fa fa-comments fa-fw" aria-hidden="true"></i>
           </a>
 
           <a class='{{if neq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info answer-btn' style='margin-right:1em;margin-left:1em;' href='/question/{{$val.q_id}}'>
