@@ -11,26 +11,45 @@
 
         <h3><a href="/question/{{$val.Id}}">{{$val.Text}}</a></h3>
         <p>{{$val.Description}}</p>
-        <span>{{i18n $.Lang "time_written" }}:  {{dateformat $val.CreatedAt "02-01-06 15:04:05"}} </span>
 
-        <div class="btn-toolbar" role="group" aria-label="...">
-          <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-default answer-btn' href='/question/{{$val.Id}}'>
-            {{$val.LoveCount}}
-            <span class='counter-text'>| {{i18n $.Lang "loved_this"}}</span>
+
+        <span> {{i18n $.Lang "time_written" }}:  <a href="/question/{{$val.Id}}">{{$val.CreatedAt}}</a> </span>
+
+        <div class="btn-toolbar" role="group" aria-label="reaction area">
+          <a class='reaction-btn {{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-success answer-btn'
+            href='#' data-rtype="1" data-oid="{{$val.Id}}"
+            data-btype="+" data-irt="1" data-opposite="{{$val.Id}}-dislike-counter"
+            data-myid="{{$val.Id}}-like-counter">
+            <span id="{{$val.Id}}-like-counter">
+              {{$val.LoveCount}}
+            </span>
+            <i class="fa fa-thumbs-up fa-fw" aria-hidden="true"></i>
           </a>
-          <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-default answer-btn' href='/question/{{$val.Id}}'>
-            {{$val.HateCount}}
-            <span class="counter-text">| {{i18n $.Lang "hated_this"}}</span>
+          <a class='reaction-btn {{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-danger answer-btn'
+            href='#' data-rtype="0" data-oid="{{$val.Id}}"
+            data-btype="-" data-irt="1" id="negative-reaction-btn-{{$val.Id}}"
+            data-opposite="{{$val.Id}}-like-counter"
+            data-myid="{{$val.Id}}-dislike-counter">
+            <span id="{{$val.Id}}-dislike-counter">
+              {{$val.HateCount}}
+            </span>
+            <i class="fa fa-thumbs-down fa-fw" aria-hidden="true"></i>
           </a>
-          <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-default answer-btn' href='/question/{{$val.Id}}'>
-            {{$val.CommentCount}}
-            <span class="counter-text">| {{i18n $.Lang "commented_on_this"}}</span>
+          <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info answer-btn' href='/question/{{$val.Id}}'>
+            <span>
+              {{$val.CommentCount}}
+            </span>
+            <i class="fa fa-comments fa-fw" aria-hidden="true"></i>
           </a>
 
-          <a class='{{if neq $.Lang "ar-SA"}}pull-right {{end}}btn btn-primary answer-btn' style='margin-right:1em;margin-left:1em;' href='/question/{{$val.Id}}'>
-            {{ i18n $.Lang "answer_this"}}
+          <a class='{{if neq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info answer-btn' style='margin-right:1em;margin-left:1em;' href='/question/{{$val.Id}}'>
+            {{ i18n $.Lang "answer_this"}} <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
           </a>
         </div>
+
+
+
+
 
 
       </div>
