@@ -138,25 +138,42 @@ $(".reaction-btn").on("click", function (e) {
   e.preventDefault();
   var reaction_type = $(this).data('rtype');
   var btn_type = $(this).data('btype');
-  var item_id = parseInt($(this).data('oid'));
-  var item_type = parseInt($(this).data('irt'));
+  var item_id = $(this).data('oid');
+  var item_type = $(this).data('irt');
 
   if (reaction_type != 'undefined' && item_id != undefined) {
-    var url = "/api/reaction/"+item_id+"/"+reaction_type+"?ir_t="+item_type;
-    //var counter = parseInt($(this).children().first().html());
-    //$(this).children().first().html(counter+1);
+
+    var url =   "/api/reaction/"+item_id+"/"+reaction_type+"/"+item_type;
     var likeCounterId = "#"+item_id+"-like-counter";
-    var dislikeCounter = "#"+item_id+"-dislike-counter";
+    var dislikeCounterId = "#"+item_id+"-dislike-counter";
+    var mybtn = $(this);
+
     $.ajax({
       url: url,
       type: "POST",
       contentType: "application/json",
       success: function(result) {
-        var reactions = result["reactions"][0];
-        if (reactions != 'undefined') {
-          $(this).prop("disabled",true);
-          $(likeCounterId).html(reactions["love_count"]);
-          $(dislikeCounter).html(reactions["hate_count"])
+        console.log(result);
+        if (result["reactions"] != 'undefined') {
+          var reactions = result["reactions"];
+          if (reactions != 'undefined') {
+            //$(this).prop("disabled",true);
+            var opposite = "#"+mybtn.data('opposite');
+            var current = "#"+mybtn.data('myid')
+
+            if (mybtn.data('btype') == '-') {
+              $(current).html(reactions["hate_count"]);
+              $(opposite).html(reactions["love_count"]);
+
+              console.log('type: "-"');
+            } else if (mybtn.data('btype') == '+') {
+
+              $(current).html(reactions["love_count"]);
+              $(opposite).html(reactions["hate_count"]);
+
+              console.log('type: "+"');
+            }
+          }
         }
       }
     })
