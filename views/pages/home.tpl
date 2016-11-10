@@ -57,6 +57,11 @@
             {{ i18n $.Lang "answer_this"}} <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
           </a>
         </div>
+        <div class="comments-container">
+          <form class="comment-form" method="post" action="/api/comment/:parent_type/:parent_id">
+            <textarea class="form-control form-control-arabic" rows="7" name="description" placeholder='{{i18n .Lang "enter_comment_here"}}' id="comment-text-editor" aria-describedby="basic-addon1"></textarea>
+          </form>
+        </div>
 
 
       </div>
