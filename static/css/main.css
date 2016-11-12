@@ -132,7 +132,7 @@ img.a-item-author-img-arabic {
   width: 25em;
   margin: auto;
 }
-.answer-btn {
+.short-btn {
   height: 1.5em;
   padding-top: 0em;
   padding-bottom: 0em;
@@ -149,13 +149,12 @@ textarea
 {
   width:100%;
   box-sizing: border-box;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  overflow: hidden;
   padding-right: 20px;
 }
 .textwrapper
 {
-  border:1px solid #999999;
+  border:1px solid #eee;
   margin:5px 0;
   padding:3px;
 }
@@ -178,8 +177,19 @@ textarea
   //margin-top: -1em;
 }
 .knows-li:before {
-font-family: 'FontAwesome';
-content: '\f058';
-margin:0 5px 0 -15px;
-color: #0A0;
+  font-family: 'FontAwesome';
+  content: '\f058';
+  margin:0 5px 0 -15px;
+  color: #0A0;
+}
+.comment-form, .comments-list {
+  background-color: #EFE;
+}
+.comment-form {
+  padding: .3em;
+  padding-top: 0em;
+}
+.comment-form textarea {
+  border: 0;
+  overflow: hidden;
 }
