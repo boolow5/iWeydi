@@ -10,6 +10,7 @@
     <div class="list-item-container q-list">
       <form id="register-form" class="form" method="post" action="/user/register">
         <div class="input-group">
+          {{ .xsrfdata }}
           <input type="text" class="form-control" name="first_name" placeholder='{{i18n .Lang "first_name"}}' id="register-first_name" autofocus>
           <input type="text" class="form-control" name="last_name" placeholder='{{i18n .Lang "last_name"}}' id="register-last_name">
 
