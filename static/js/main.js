@@ -7,7 +7,9 @@ $.extend({
         }
         options = options || {};
         url = options.url;
-        var xsrftoken = $('meta[name=_xsrf]').attr('content');
+        //var xsrftoken = $('meta[name=_xsrf]').attr('content');
+        var xsrftoken   = $('input[name=_xsrf]').attr('value');
+
         var headers = options.headers || {};
         var domain = document.domain.replace(/\./ig, '\\.');
         if (!/^(http:|https:).*/.test(url) || eval('/^(http:|https:)\\/\\/(.+\\.)*' + domain + '.*/').test(url)) {
@@ -39,7 +41,7 @@ function translate(result, ids) {
     returned_word = result["success"]
   }
   $.ajax({
-    url: "http://localhost:8080/translate/"+returned_word+"/-1",
+    url: "/translate/"+returned_word+"/-1",
     type: "GET",
     contentType: "application/json",
     success: function(another_result) {
@@ -53,7 +55,60 @@ function translate(result, ids) {
   });
 }
 
+$(".comment-counter-btn").on("click", function(e){
+  e.preventDefault();
+  var targetForm = $(this).data('targetform');
+  var targetList = $(this).data('targetlist')
+  var parentType = $(this).data('parenttype');
+  var parentId = $(this).data('parentid');
+  if ($("#"+targetForm).hasClass('hidden')) {
+    $("#"+targetForm).removeClass('hidden');
 
+    $.ajax({
+      url: "/comment",
+      type: "GET",
+      success: function(result) {
+        $("#"+targetForm).html(result);
+      }
+    });
+    $.ajax({
+      url: "/comments/"+parentType+"/"+parentId,
+      type: "GET",
+      success: function(result) {
+        $("#"+targetList).html(result);
+      }
+    });
+
+  } else {
+    $("#"+targetForm).addClass('hidden');
+  }
+});
+/*
+$("form.comment-form").submit(function(e) {
+  e.preventDefault();
+
+  $.ajax({
+    url: this.action,
+    type: this.method,
+    data: JSON.stringify(getFormData(this)),
+    contentType: "application/json",
+    success: function(result) {
+      console.log(result);
+    }
+  });
+
+  return false;
+});*/
+
+function submitComment(formId) {
+  form = document.getElementById(formId);
+  formData = getFormData(formId)
+  console.log("submitComment:");
+  console.log(this);
+  console.log(form);
+  console.log(formData);
+  
+}
 //
 $("#login-form").submit(function(e){
   e.preventDefault();
@@ -132,6 +187,13 @@ $("#question-form").submit(function(e){
       }
     }
   })
+});
+
+$(".comment-btn").on("click", function (e) {
+  e.preventDefault();
+  var comments = {};
+  var loading = true;
+
 });
 
 $(".reaction-btn").on("click", function (e) {
