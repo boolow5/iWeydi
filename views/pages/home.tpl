@@ -21,13 +21,13 @@
         </div>
         <p>
           {{shorten_makrdown $val.text 120 }}
-          <a href="/answer/{{$val.id}}" class="answer-btn read-more-btn">{{i18n $.Lang "read_more"}}</a>
+          <a href="/answer/{{$val.id}}" class="short-btn read-more-btn">{{i18n $.Lang "read_more"}}</a>
         </p>
 
         <span> {{i18n $.Lang "time_written" }}:  <a href="/answer/{{$val.id}}">{{$val.created_at}}</a> </span>
 
         <div class="btn-toolbar" role="group" aria-label="reaction area">
-          <a class='reaction-btn {{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-success answer-btn'
+          <a class='reaction-btn {{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-success short-btn'
             href='#' data-rtype="1" data-oid="{{$val.id}}"
             data-btype="+" data-irt="2" data-opposite="{{$val.id}}-dislike-counter"
             data-myid="{{$val.id}}-like-counter">
@@ -36,7 +36,7 @@
             </span>
             <i class="fa fa-thumbs-up fa-fw" aria-hidden="true"></i>
           </a>
-          <a class='reaction-btn {{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-danger answer-btn'
+          <a class='reaction-btn {{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-danger short-btn'
             href='#' data-rtype="0" data-oid="{{$val.id}}"
             data-btype="-" data-irt="2"
             data-myid="{{$val.id}}-dislike-counter"
@@ -46,21 +46,25 @@
             </span>
             <i class="fa fa-thumbs-down fa-fw" aria-hidden="true"></i>
           </a>
-          <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info answer-btn' href='/question/{{$val.q_id}}'>
+          <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info short-btn comment-counter-btn' data-parentType="2"  data-parentId="{{$val.id}}"
+            data-targetForm="{{$val.id}}-comments-form" data-targetList="{{$val.id}}-comments-list" href='#'>
             <span>
               {{$val.comment_count}}
             </span>
             <i class="fa fa-comments fa-fw" aria-hidden="true"></i>
           </a>
 
-          <a class='{{if neq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info answer-btn' style='margin-right:1em;margin-left:1em;' href='/question/{{$val.q_id}}'>
+          <a class='{{if neq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info short-btn' style='margin-right:1em;margin-left:1em;' href='/question/{{$val.q_id}}'>
             {{ i18n $.Lang "answer_this"}} <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
           </a>
         </div>
-        <div class="comments-container">
-          <form class="comment-form" method="post" action="/api/comment/:parent_type/:parent_id">
-            <textarea class="form-control form-control-arabic" rows="7" name="description" placeholder='{{i18n .Lang "enter_comment_here"}}' id="comment-text-editor" aria-describedby="basic-addon1"></textarea>
-          </form>
+        <div class="comment-wrapper">
+          <div id="{{$val.id}}-comments-form" class="hidden" data-itemType="1" data-parentId="{{$val.id}}">
+
+          </div>
+          <div id="{{$val.id}}-comments-list" class="comments-list">
+
+          </div>
         </div>
 
 
