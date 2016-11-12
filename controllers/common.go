@@ -27,6 +27,7 @@ func SetupCommonLayout(tplName string, controller *beego.Controller) {
 
 	controller.Data["xsrf_token"] = controller.XSRFToken()
 	controller.XSRFExpire = 7200
+	//controller.Data["xsrfdata"] = template.HTML(controller.XSRFFormHTML())
 	controller.Data["xsrfdata"] = template.HTML(controller.XSRFFormHTML())
 
 	current_user := controller.GetSession("current_user")
