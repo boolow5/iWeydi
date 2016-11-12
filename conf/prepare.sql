@@ -60,6 +60,42 @@ CREATE OR REPLACE VIEW answer_activity_view AS
 
 GRANT ALL PRIVILEGES ON TABLE answer_activity_view TO mahdi;
 
+/*__________________ COMMENTS ______________*/
+-- ################## QUESTION COMMENTS #################################################
+DROP VIEW IF EXISTS question_comments_view;
+CREATE VIEW question_comments_view AS
+	SELECT 	C.id, to_char(C.created_at, 'dd-mm-yyyy HH12:MIam') AS created_at, 
+		to_char(C.updated_at, 'dd-mm-yyyy HH12:MIam') AS updated_at, C.text,
+		U.id AS author_id, concat(P.first_name, ' ', P.last_name) AS author_name,
+		C.question_id AS parent_id, P.avatar_url AS author_avatar_url
+	FROM weydi_user_comment C
+		LEFT JOIN weydi_auth_user U ON C.author_id = U.id
+		LEFT JOIN weydi_user_profile P ON U.profile_id = P.id;
+GRANT ALL PRIVILEGES ON TABLE question_comments_view TO mahdi;
+
+-- ################### ANSWER COMMENTS ##################################################
+DROP VIEW IF EXISTS answer_comments_view;
+CREATE VIEW answer_comments_view AS
+	SELECT 	C.id, to_char(C.created_at, 'dd-mm-yyyy HH12:MIam') AS created_at, 
+		to_char(C.updated_at, 'dd-mm-yyyy HH12:MIam') AS updated_at, C.text,
+		U.id AS author_id, concat(P.first_name, ' ', P.last_name) AS author_name,
+		C.answer_id AS parent_id, P.avatar_url AS author_avatar_url
+	FROM weydi_user_comment C
+		LEFT JOIN weydi_auth_user U ON C.author_id = U.id
+		LEFT JOIN weydi_user_profile P ON U.profile_id = P.id;
+GRANT ALL PRIVILEGES ON TABLE answer_comments_view TO mahdi;
+
+-- ################### COMMENT COMMENTS #################################################
+DROP VIEW IF EXISTS comment_comments_view;
+CREATE VIEW comment_comments_view AS
+	SELECT 	C.id, to_char(C.created_at, 'dd-mm-yyyy HH12:MIam') AS created_at, 
+		to_char(C.updated_at, 'dd-mm-yyyy HH12:MIam') AS updated_at, C.text,
+		U.id AS author_id, concat(P.first_name, ' ', P.last_name) AS author_name,
+		C.comment_id AS parent_id, P.avatar_url AS author_avatar_url
+	FROM weydi_user_comment C
+		LEFT JOIN weydi_auth_user U ON C.author_id = U.id
+		LEFT JOIN weydi_user_profile P ON U.profile_id = P.id;
+GRANT ALL PRIVILEGES ON TABLE comment_comments_view TO mahdi;
 
 /*                               2. Function Declarations                                 */
 /******************************************************************************************/
@@ -355,17 +391,8 @@ $like_trigger$ LANGUAGE plpgsql;
 
 /*                               2. Data                                                  */
 /******************************************************************************************/
- -- insert two users Mahdi and Muno
 
-/*
-INSERT INTO weydi_user_profile(created_at, updated_at, first_name, last_name, avatar_url)
-	VALUES	(now(), now(), 'Mahdi', 'Bolow', 'https://github.com/boolow5.png'),
-		(now(), now(), 'Muno', 'Salaad', 'https://github.com/boolow5.png');
-
-INSERT INTO weydi_auth_user(created_at, updated_at, email, password, profile_id)
-	VALUES	(now(),now(),'boolow5@gmail.com', '$2a$10$BYlqx4UDfbthgx1B34sshOSkdg6KmanA2yixtbI/2xsdotK0/sS8K', 1),
-		(now(),now(),'lajecleey5@gmail.com', '$2a$10$XWsXQnCjR/2ZFes7CrTWUecupBBe3Z0bxJ.Fu7qBaEcMB57tfVg1a', 2);
-
+-- -- ADD ACTIVITY TYPES / LANGUAGES / 
 INSERT INTO weydi_activity_type(created_at, updated_at, name)
 	VALUES	(now(), now(), 'question_asked'),
 		(now(), now(), 'answer_question'),
@@ -375,4 +402,4 @@ INSERT INTO weydi_activity_type(created_at, updated_at, name)
 		(now(), now(), 'followed_question'),
 		(now(), now(), 'followed_topic');
 
-*/
+INSERT INTO weydi_language(name, code) VALUES('English', 'en-US'), ('Somali', 'so-SO'), ('العربية', 'ar-SA');
