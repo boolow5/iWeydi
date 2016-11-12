@@ -38,9 +38,12 @@ func init() {
 	// NORMAL
 	beego.Router("/answer/:id", &controllers.AnswerController{}, "get:GetAnswer")
 
-	// TOPICS
+	// COMMENT
 	// API
+	beego.Router("/api/comment", &controllers.CommentAPIController{}, "post:PostComment;put:PutComment")
 	// NORMAL
+	beego.Router("/comment", &controllers.CommentController{}, "get:CommentForm")
+	beego.Router("/comments/:parent_type/:parent_id", &controllers.CommentController{}, "get:GetComments")
 
 	// LIKES
 	// API
