@@ -47,16 +47,16 @@
           </p>
 
 
-          <span>{{i18n $.Lang "time_written" }}:  <a href="/answer/{{$val.Id}}" class="answer-btn read-more-btn">{{dateformat $val.CreatedAt "02-01-06 15:04:05"}}</a> </span>
+          <span>{{i18n $.Lang "time_written" }}:  <a href="/answer/{{$val.Id}}" class="short-btn read-more-btn">{{dateformat $val.CreatedAt "02-01-06 15:04:05"}}</a> </span>
 
           <div class="btn-toolbar" role="group" aria-label="...">
-            <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-success answer-btn' href='/question/{{$val.Id}}'>
+            <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-success short-btn' href='/question/{{$val.Id}}'>
               <span>{{$val.LoveCount}} <i class="fa fa-thumbs-up fa-fw" aria-hidden="true"></i></span>
             </a>
-            <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-danger answer-btn' href='/question/{{$val.Id}}'>
+            <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-danger short-btn' href='/question/{{$val.Id}}'>
               <span>{{$val.HateCount}} <i class="fa fa-thumbs-down fa-fw" aria-hidden="true"></i></span>
             </a>
-            <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info answer-btn' href='/question/{{$val.Id}}'>
+            <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info short-btn' href='/question/{{$val.Id}}'>
               <span>{{$val.CommentCount}} <i class="fa fa-comments fa-fw" aria-hidden="true"></i></span>
             </a>
           </div>
