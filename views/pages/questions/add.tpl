@@ -6,6 +6,7 @@
     <h1>{{i18n $.Lang .Title}}</h1>
     <div class="one-item-container q-list">
       <form id="question-form" class="form" method="post" action="/api/question">
+        {{ .xsrfdata }}
         <div class="input-group">
           <span class='input-group-addon{{if eq .Lang "ar-SA"}} horizontal-mirror{{end}} form-control-arabic' id="basic-addon1"><i class="fa fa-question-circle fa-fw" aria-hidden="true"></i> </span>
           <input type="text" class="form-control form-control-arabic" required name="text" placeholder='{{i18n .Lang "enter_question_here"}}' id="question-text-editor" aria-describedby="basic-addon1">
