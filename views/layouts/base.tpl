@@ -14,7 +14,7 @@
     <meta property="og:title" content='{{i18n .Lang "about"}} - {{i18n .Lang "app_short_description"}}' />
     <meta property="og:description" content='{{i18n .Lang "app_description"}}' />
     <meta property="og:image" content="/static/img/iweydi-bg-social.png" />
-    <meta name="_xsrf" content="{{.xsrf_token}}" />
+    <!--<meta name="_xsrf" content="{{.xsrf_token}}" />-->
 
     <title>{{i18n .Lang .Title}} - {{i18n .Lang "app_short_description"}}</title>
 
