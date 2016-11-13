@@ -190,6 +190,24 @@ textarea
   padding-top: 0em;
 }
 .comment-form textarea {
-  border: 0;
+  border: 1px solid #AAA;
   overflow: hidden;
+}
+.one-comment {
+  border: 1px solid #DDD;
+  margin: .3em;
+  border-radius: .5em;
+  box-shadow: inset 1px 1px 10px #DDD;
+  padding: .5em;
+}
+.one-comment p {
+  margin-top: 0em;
+  padding-top: 0em;
+  padding-bottom: 0em;
+}
+.comment-toolbar {
+  border-top: 1px dotted #CCC;
+  font-size: .9em;
+  margin-bottom: 0em;
+  color: #AA9;
 }
