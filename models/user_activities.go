@@ -22,9 +22,9 @@ type Comment struct {
 
 	Text       string         `json:"text" orm:"size(500)"`
 	Author     *User          `json:"author" orm:"rel(fk);on_delete(cascade)"`
-	Answer     *Answer        `json:"answer" orm:"rel(fk);on_delete(cascade)"`
-	Question   *Question      `json:"question" orm:"rel(fk);on_delete(cascade)"`
-	Comment    *Comment       `json:"comment" orm:"rel(fk);on_delete(cascade)"`
+	Answer     *Answer        `json:"answer" orm:"null;rel(fk);on_delete(cascade)"`
+	Question   *Question      `json:"question" orm:"null;rel(fk);on_delete(cascade)"`
+	Comment    *Comment       `json:"comment" orm:"null;rel(fk);on_delete(cascade)"`
 	ParentType *CommentParent `json:"comment_parent" orm:"rel(fk);on_delete(cascade)"`
 
 	Children []Comment `json:"children" orm:"-"`
