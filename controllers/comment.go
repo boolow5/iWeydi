@@ -14,6 +14,8 @@ type CommentController struct {
 func (this *CommentController) CommentForm() {
 	this.Data["xsrfdata"] = template.HTML(this.XSRFFormHTML())
 	this.TplName = "pages/comments/add.tpl"
+	this.Data["ParentId"] = this.Ctx.Input.Query("parent_id")
+	this.Data["ParentType"] = this.Ctx.Input.Query("parent_type")
 }
 func (this *CommentController) GetComments() {
 	this.TplName = "pages/comments/comments.tpl"
@@ -40,12 +42,12 @@ func (this *CommentController) GetComments() {
 	o := orm.NewOrm()
 	var rs orm.RawSeter
 	if parent_type == 1 {
-		rs = o.Raw("SELECT * FROM question_comments_view WHERE parent_id = ?", parent_id)
+		rs = o.Raw("SELECT * FROM question_comments_view WHERE parent_id = ? ORDER BY id DESC", parent_id)
 	} else if parent_type == 2 {
-		rs = o.Raw("SELECT * FROM answer_comments_view WHERE parent_id = ?", parent_id)
+		rs = o.Raw("SELECT * FROM answer_comments_view WHERE parent_id = ? ORDER BY id DESC", parent_id)
 	} else if parent_type == 3 {
-		rs = o.Raw("SELECT * FROM comment_comments_view WHERE parent_id = ?", parent_id)
+		rs = o.Raw("SELECT * FROM comment_comments_view WHERE parent_id = ? ORDER BY id DESC", parent_id)
 	}
-	rs.Values(&comments, "id", "text", "author_name", "author_id", "parent_id", "love_count", "hate_count", "comment_count")
+	rs.Values(&comments, "id", "text", "author_name", "created_at", "author_id", "parent_id", "love_count", "hate_count", "comment_count")
 	this.Data["Comments"] = comments
 }
