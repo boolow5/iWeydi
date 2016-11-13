@@ -152,6 +152,27 @@ END;
 $likes_counter$ LANGUAGE plpgsql;
 */
 
+CREATE OR REPLACE FUNCTION update_question_comment_counter(question_id integer) RETURNS VOID AS $$
+BEGIN
+	UPDATE weydi_question
+	SET comment_count = (SELECT COUNT(*) FROM weydi_user_comment UC WHERE UC.question_id = $1)
+	WHERE id = $1;
+END; $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION update_answer_comment_counter(answer_id integer) RETURNS VOID AS $$
+BEGIN
+	UPDATE weydi_answer
+	SET comment_count = (SELECT COUNT(*) FROM weydi_user_comment UC WHERE UC.answer_id = $1)
+	WHERE id = $1;
+END; $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION update_comment_comment_counter(comment_id integer) RETURNS VOID AS $$
+BEGIN
+	UPDATE weydi_user_comment
+	SET comment_count = (SELECT COUNT(*) FROM weydi_user_comment UC WHERE UC.comment_id = $1)
+	WHERE id = $1;
+END; $$ LANGUAGE plpgsql;
+
 
 
 /*                               2. Trigger Declarations                                 */
