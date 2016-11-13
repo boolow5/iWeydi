@@ -40,7 +40,7 @@ func init() {
 
 	// COMMENT
 	// API
-	beego.Router("/api/comment", &controllers.CommentAPIController{}, "post:PostComment;put:PutComment")
+	beego.Router("/api/comment/:parent_type/:parent_id", &controllers.CommentAPIController{}, "post:PostComment;put:PutComment")
 	// NORMAL
 	beego.Router("/comment", &controllers.CommentController{}, "get:CommentForm")
 	beego.Router("/comments/:parent_type/:parent_id", &controllers.CommentController{}, "get:GetComments")
