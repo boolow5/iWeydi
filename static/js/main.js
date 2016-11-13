@@ -63,9 +63,10 @@ $(".comment-counter-btn").on("click", function(e){
   var parentId = $(this).data('parentid');
   if ($("#"+targetForm).hasClass('hidden')) {
     $("#"+targetForm).removeClass('hidden');
+    $("#"+targetList).removeClass('hidden');
 
     $.ajax({
-      url: "/comment",
+      url: "/comment?parent_type="+parentType+"&parent_id="+parentId,
       type: "GET",
       success: function(result) {
         $("#"+targetForm).html(result);
@@ -81,35 +82,43 @@ $(".comment-counter-btn").on("click", function(e){
 
   } else {
     $("#"+targetForm).addClass('hidden');
+    $("#"+targetList).addClass('hidden');
   }
 });
-/*
-$("form.comment-form").submit(function(e) {
-  e.preventDefault();
-
-  $.ajax({
-    url: this.action,
-    type: this.method,
-    data: JSON.stringify(getFormData(this)),
-    contentType: "application/json",
-    success: function(result) {
-      console.log(result);
-    }
-  });
-
-  return false;
-});*/
 
 function submitComment(formId) {
-  form = document.getElementById(formId);
-  formData = getFormData(formId)
   console.log("submitComment:");
-  console.log(this);
-  console.log(form);
-  console.log(formData);
-  
+  var form = document.getElementById(formId);
+  var url = form.action;
+  var method = form.method;
+
+  var parts = url.split("/")
+  var parent_id = parts[parts.length-1];
+  var parent_type = parts[parts.length-2];
+
+
+  $.ajax({
+    url: url,
+    type: method,
+    data: '{"text":"'+ form["text"].value +'"}',
+    contentType: "application/json",
+    success: function(result) {
+      console.log("submitComment result:");
+      console.log(result);
+      if (result["success"]) {
+        $("#"+formId).empty();
+        counter_id = "#"+ parent_id +"-"+ parent_type +"-comment-counter-btn";
+        current_counter = parseInt($(counter_id).children().first().html());
+        console.log(current_counter);
+        $(counter_id).children().first().html(current_counter+1);
+        console.log(current_counter+1);
+      }
+    }
+  })
+
+  return false;
 }
-//
+
 $("#login-form").submit(function(e){
   e.preventDefault();
 
