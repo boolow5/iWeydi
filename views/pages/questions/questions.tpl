@@ -35,7 +35,7 @@
             </span>
             <i class="fa fa-thumbs-down fa-fw" aria-hidden="true"></i>
           </a>
-          <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info short-btn comment-counter-btn'  data-parentType="1"  data-parentId="{{$val.Id}}"
+          <a id="{{$val.Id}}-1-comment-counter-btn" class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info short-btn comment-counter-btn'  data-parentType="1"  data-parentId="{{$val.Id}}"
             data-targetForm="{{$val.Id}}-comments-form" data-targetList="{{$val.Id}}-comments-list" href='#'>
             <span>
               {{$val.CommentCount}}
