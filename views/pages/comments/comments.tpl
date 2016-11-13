@@ -1,13 +1,15 @@
-<ul class="comments-ul">
-  {{range $index, $val := .Questions}}
+<ul class="comments-ul list-unstyled">
+  {{range $index, $val := .Comments}}
     <li class="comment-li">
       <div class="one-comment">
         <p>
-          {{$val.text}}
+          <i class="fa fa-comment-o fa-fw" aria-hidden="true"></i> {{$val.text}}
         </p>
-        <p>
-          <i class="fa fa-pencil fa-fw" aria-hidden="true"></i> {{$val.author_name}}
-          <i class="fa fa-clock fa-fw" aria-hidden="true"></i> {{$val.created_at}}
+        <p class="comment-toolbar">
+          <i class="fa fa-user fa-fw" aria-hidden="true"></i> {{$val.author_name}}
+          <i class="fa fa-clock-o fa-fw" aria-hidden="true"></i> {{$val.created_at}}
+          <i class="fa fa-thumbs-o-up fa-fw" aria-hidden="true"></i> {{$val.love_count}}
+          <i class="fa fa-thumbs-o-down fa-fw" aria-hidden="true"></i> {{$val.hate_count}}
         </p>
       </div>
     </li>
