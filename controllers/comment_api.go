@@ -91,11 +91,19 @@ func (this *CommentAPIController) PostComment() {
 	if err != nil {
 		//DON'T SAVE ANYTHING
 		o.Rollback()
-		this.Data["json"] = map[string]interface{}{"error": "cannot_save_comment", "err": err, "id": comment_id}
+		this.Data["json"] = map[string]interface{}{"error": "cannot_save_comment", "err": err.Error(), "id": comment_id}
 		this.ServeJSON()
 		return
 	}
 	o.Commit()
+
+	if parent_type == 1 {
+		o.Raw("SELECT update_question_comment_counter(?)", parent_id).Exec()
+	} else if parent_type == 2 {
+		o.Raw("SELECT update_answer_comment_counter(?)", parent_id).Exec()
+	} else if parent_type == 3 {
+		o.Raw("SELECT update_comment_comment_counter(?)", parent_id).Exec()
+	}
 	this.Data["json"] = map[string]interface{}{"success": "add_comment_success", "parent_type": parent_type, "parent_id": parent_id}
 	this.ServeJSON()
 }
