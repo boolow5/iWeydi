@@ -22,6 +22,7 @@ func SetupCommonLayout(tplName string, controller *beego.Controller) {
 	//controller.LayoutSections["Scripts"] = "partials/scripts.tpl"
 	//controller.LayoutSections["Sidebar"] = "partials/sidebar.tpl"
 	controller.LayoutSections["NavPills"] = "partials/nav-pills.tpl"
+	controller.LayoutSections["SearchBar"] = "partials/search.tpl"
 	controller.Data["LoggedIn"] = IsAuthenticated(controller)
 	controller.Data["NotLoggedIn"] = !IsAuthenticated(controller)
 
@@ -47,6 +48,12 @@ func GetIDFromSession(mp map[string]interface{}) int {
 		id, _ = mp["id"].(int)
 	}
 	return id
+}
+
+func removeInjection(s string) string {
+	s = strings.Replace(s, "'", "", -1)
+	s = strings.Replace(s, ";", "", -1)
+	return s
 }
 
 func GetUsersYouFollow(controller *beego.Controller, my_id int) (users_ids []int) {
