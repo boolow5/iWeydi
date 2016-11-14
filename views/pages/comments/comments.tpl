@@ -3,7 +3,8 @@
     <li class="comment-li">
       <div class="one-comment">
         <p>
-          <i class="fa fa-comment-o fa-fw" aria-hidden="true"></i> {{$val.text}}
+          <span class="grayish-color"><i class="fa fa-comment-o fa-fw" aria-hidden="true"></i></span>
+          {{$val.text | markdown}}
         </p>
         <p class="comment-toolbar">
           <i class="fa fa-user fa-fw" aria-hidden="true"></i> {{$val.author_name}}
