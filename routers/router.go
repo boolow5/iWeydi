@@ -25,11 +25,12 @@ func init() {
 
 	// QUESTION
 	// API
-	beego.Router("/question/:id", &controllers.QuestionController{}, "get:GetOneQuestion")
+	beego.Router("/api/question", &controllers.QuestionAPIController{}, "post:Post")
 
 	// NORMAL
 	beego.Router("/questions", &controllers.QuestionController{}, "get:GetQuestions")
 	beego.Router("/question", &controllers.QuestionController{}, "get:AddQuestion")
+	beego.Router("/question/:id", &controllers.QuestionController{}, "get:GetOneQuestion")
 
 	// ANSWERS
 	// API
@@ -54,6 +55,6 @@ func init() {
 
 	// MISC
 	beego.Router("/translate/:word/:args", &controllers.MiscAPIController{}, "*:GetTranslation")
+	beego.Router("/api/search", &controllers.QuestionAPIController{}, "post:Search")
 
-	beego.Router("/api/question", &controllers.QuestionAPIController{}, "post:Post")
 }
