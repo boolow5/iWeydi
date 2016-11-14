@@ -59,6 +59,9 @@
         <div class="alert alert-danger hidden" role="alert" id="error"></div>
         <div class="alert alert-success hidden" role="alert" id="success"></div>
       </div>
+      <div class="row">
+        {{.SearchBar}}
+      </div>
       {{.LayoutContent}}
     </div>
 
