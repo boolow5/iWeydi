@@ -46,7 +46,9 @@
             </span>
             <i class="fa fa-thumbs-down fa-fw" aria-hidden="true"></i>
           </a>
-          <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info short-btn comment-counter-btn' data-parentType="2"  data-parentId="{{$val.id}}"
+
+          <a id="{{$val.id}}-2-comment-counter-btn" class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info short-btn comment-counter-btn'
+            data-parentType="2"  data-parentId="{{$val.id}}"
             data-targetForm="{{$val.id}}-comments-form" data-targetList="{{$val.id}}-comments-list" href='#'>
             <span>
               {{$val.comment_count}}
@@ -54,18 +56,24 @@
             <i class="fa fa-comments fa-fw" aria-hidden="true"></i>
           </a>
 
+
+
+
           <a class='{{if neq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info short-btn' style='margin-right:1em;margin-left:1em;' href='/question/{{$val.q_id}}'>
             {{ i18n $.Lang "answer_this"}} <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
           </a>
         </div>
+
+
         <div class="comment-wrapper">
-          <div id="{{$val.id}}-comments-form" class="hidden" data-itemType="1" data-parentId="{{$val.id}}">
+          <div id="{{$val.id}}-comments-form" class="hidden" data-itemType="2" data-parentId="{{$val.id}}">
 
           </div>
           <div id="{{$val.id}}-comments-list" class="comments-list">
 
           </div>
         </div>
+
 
 
       </div>
