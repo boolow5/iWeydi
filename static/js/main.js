@@ -283,9 +283,40 @@ $("#new-answer-form").submit(function(e){
         //document.location.reload();
       }
     }
-  })
+  });
+});
 
-  //return false;
+$("#search-form").submit(function(e){
+  //e.preventDefault();
+
+   //document.getElementById('fade').style.display='block';
+  $.ajax({
+    url: this.action,
+    type: this.method,
+    data: JSON.stringify(getFormData("search-form")),
+    contentType: "application/json",
+    success: function(result) {
+      $("#search-results").empty();
+      console.log(result);
+      var questions = result["questions"];
+      if (!questions) {
+        document.getElementById("search-results").style.display='none';
+        return
+      }
+
+      var q = "<ul class='list-unstyled'>";
+      for (var i = 0; i < questions.length; i++) {
+        q += "<li>";
+        q += "<a href='/question/"+questions[i]["id"]+"'>";
+        q += questions[i]["text"] + "</a>";
+        q += "</li>";
+      }
+      q += "</ul>";
+      document.getElementById("search-results").style.display='block';
+      $("#search-results").html(q);
+    }
+  })
+  return false;
 });
 
 
