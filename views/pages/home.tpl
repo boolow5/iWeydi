@@ -5,7 +5,7 @@
 
 
   <div class="col-sm-7">
-    <h1>{{i18n $.Lang .Title}}</h1>
+
     <div class="list-item-container q-list">
     {{range $index, $val := .Feeds}}
       <p> {{$val.Doer}} {{$val.ActivityType}}</p>
