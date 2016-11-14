@@ -45,7 +45,7 @@ function translate(result, ids) {
     type: "GET",
     contentType: "application/json",
     success: function(another_result) {
-      console.log(another_result);
+
       if (returned_word) {
         for (var i=0; i<ids.length; i++) {
           $(ids[i]).html(another_result["meaning"]);
@@ -65,20 +65,8 @@ $(".comment-counter-btn").on("click", function(e){
     $("#"+targetForm).removeClass('hidden');
     $("#"+targetList).removeClass('hidden');
 
-    $.ajax({
-      url: "/comment?parent_type="+parentType+"&parent_id="+parentId,
-      type: "GET",
-      success: function(result) {
-        $("#"+targetForm).html(result);
-      }
-    });
-    $.ajax({
-      url: "/comments/"+parentType+"/"+parentId,
-      type: "GET",
-      success: function(result) {
-        $("#"+targetList).html(result);
-      }
-    });
+    fetchCommentsList(targetList, parentType, parentId);
+    fetchCommentsForm(targetForm, parentType, parentId);
 
   } else {
     $("#"+targetForm).addClass('hidden');
@@ -86,8 +74,28 @@ $(".comment-counter-btn").on("click", function(e){
   }
 });
 
+function fetchCommentsList(targetList, parentType, parentId){
+  $.ajax({
+    url: "/comments/"+parentType+"/"+parentId,
+    type: "GET",
+    success: function(result) {
+      $("#"+targetList).html(result);
+    }
+  });
+}
+
+function fetchCommentsForm(targetForm, parentType, parentId){
+  $.ajax({
+    url: "/comment?parent_type="+parentType+"&parent_id="+parentId,
+    type: "GET",
+    success: function(result) {
+      $("#"+targetForm).html(result);
+    }
+  });
+}
+
 function submitComment(formId) {
-  console.log("submitComment:");
+
   var form = document.getElementById(formId);
   var url = form.action;
   var method = form.method;
@@ -96,22 +104,25 @@ function submitComment(formId) {
   var parent_id = parts[parts.length-1];
   var parent_type = parts[parts.length-2];
 
+  var targetList = parent_id+"-comments-list";
+  var targetForm = parent_id+"-comments-form";
 
   $.ajax({
     url: url,
     type: method,
-    data: '{"text":"'+ form["text"].value +'"}',
+    data: JSON.stringify(getFormData(formId)), /*'{"text":"'+ form["text"].value +'"}',*/
     contentType: "application/json",
     success: function(result) {
-      console.log("submitComment result:");
-      console.log(result);
+
       if (result["success"]) {
-        $("#"+formId).empty();
         counter_id = "#"+ parent_id +"-"+ parent_type +"-comment-counter-btn";
+
         current_counter = parseInt($(counter_id).children().first().html());
-        console.log(current_counter);
+
         $(counter_id).children().first().html(current_counter+1);
-        console.log(current_counter+1);
+
+        fetchCommentsList(targetList, parent_type, parent_id);
+        fetchCommentsForm(targetForm, parent_type, parent_id);
       }
     }
   })
@@ -133,7 +144,7 @@ $("#login-form").submit(function(e){
         $("#error").removeClass("hidden");
         //$("#success").addClass("hidden");
         //$("#error").html(message);
-        console.log(result);
+
         translate(result, ["#error"]);
       } else if (result["success"]) {
         $("#login-form").html('');
@@ -184,15 +195,15 @@ $("#question-form").submit(function(e){
       if (result["error"]) {
         $("#error").removeClass("hidden");
         $("#success").addClass("hidden");
-        console.log(result);
+
         translate(result, ["#error"]);
       } else if (result["success"]) {
         $("#success").removeClass("hidden");
         $("#error").addClass("hidden");
-        console.log(result);
+
         translate(result, ["#success"]);
-        //document.location.reload();
-        //$("#question-form").html('');
+        $("#question-form").empty();
+        document.location.replace("/questions");
       }
     }
   })
@@ -224,7 +235,7 @@ $(".reaction-btn").on("click", function (e) {
       type: "POST",
       contentType: "application/json",
       success: function(result) {
-        console.log(result);
+
         if (result["reactions"] != 'undefined') {
           var reactions = result["reactions"];
           if (reactions != 'undefined') {
@@ -236,13 +247,13 @@ $(".reaction-btn").on("click", function (e) {
               $(current).html(reactions["hate_count"]);
               $(opposite).html(reactions["love_count"]);
 
-              console.log('type: "-"');
+
             } else if (mybtn.data('btype') == '+') {
 
               $(current).html(reactions["love_count"]);
               $(opposite).html(reactions["hate_count"]);
 
-              console.log('type: "+"');
+
             }
           }
         }
@@ -262,11 +273,11 @@ $("#new-answer-form").submit(function(e){
     success: function(result) {
       if (result["error"]) {
         $("#error").removeClass("hidden");
-        console.log(result);
+
         translate(result, ["#error"]);
       } else if (result["success"]) {
         $("#success").removeClass("hidden");
-        console.log(result);
+
         translate(result, ["#success"]);
         $("#new-answer-form").html('');
         //document.location.reload();
@@ -288,5 +299,3 @@ $("#new-answer-form").submit(function(e){
 
     window.location.reload();
   });
-
-  // change to current language
