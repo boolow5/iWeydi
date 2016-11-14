@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
@@ -11,6 +13,67 @@ import (
 
 type QuestionAPIController struct {
 	beego.Controller
+}
+
+func (this *QuestionAPIController) Search() {
+	form := map[string]interface{}{}
+	err := json.NewDecoder(this.Ctx.Request.Body).Decode(&form)
+	if err != nil {
+		this.Data["json"] = map[string]interface{}{"error": "submitted_invalid_data"}
+		this.ServeJSON()
+		return
+	}
+	if form["search"] == nil {
+		this.Data["json"] = map[string]interface{}{"error": "nothing_to_search"}
+		this.ServeJSON()
+		return
+	}
+
+	items := removeOrdinaryWords(removeInjection(form["search"].(string)))
+
+	if len(items) < 1 {
+		this.Data["json"] = map[string]interface{}{"error": "nothing_to_search"}
+		this.ServeJSON()
+		return
+	}
+
+	if len(items[0]) < 2 {
+		this.Data["json"] = map[string]interface{}{"error": "nothing_to_search"}
+		this.ServeJSON()
+		return
+	}
+
+	fmt.Println("Items:", items)
+
+	// search questions where text in items
+	o := orm.NewOrm()
+
+	query := "SELECT id, text FROM weydi_question WHERE "
+
+	for i, v := range items {
+		if i == 0 {
+			query += " text LIKE '% " + v + "%'"
+		} else {
+			query += " OR text LIKE '% " + v + "%'"
+		}
+	}
+	query += " LIMIT 10"
+	questions := []orm.Params{}
+
+	o.Raw(query).Values(&questions, "text", "id")
+
+	this.Data["json"] = map[string]interface{}{"questions": questions}
+	this.ServeJSON()
+}
+
+func removeOrdinaryWords(s string) []string {
+	ORDINARY_WORDS := []string{" an ", " is ", " in ", " of ", " at ", " the ", " is ", " am ", " are "}
+	for _, v := range ORDINARY_WORDS {
+		strings.Replace(s, v, " ", -1)
+	}
+	words := strings.Split(s, " ")
+
+	return words
 }
 
 func (this *QuestionAPIController) Post() {
