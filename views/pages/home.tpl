@@ -14,7 +14,7 @@
 
         <div class="a-item-header">
           <a href="#" class='{{if neq $.Lang "ar-SA"}}pull-right {{end}}{{if eq $.Lang "ar-SA"}}pull-left {{end}}'>
-            <img class='a-item-author-img{{if eq .Lang "ar-SA"}}-arabic{{end}}' src="/static/img/default-avatar/default-avatar-250x250.png">
+            <img class='a-item-author-img{{if eq .Lang "ar-SA"}}-arabic{{end}}' src="{{$val.avatar_url}}">
           </a>
           <p> About the writer: Programmer and political scientist </p>
           <h3><a href="/question/{{$val.q_id}}">{{$val.question_text}}</a></h3>
