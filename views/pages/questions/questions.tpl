@@ -13,7 +13,7 @@
         <p>{{$val.Description}}</p>
 
 
-        <span> {{i18n $.Lang "time_written" }}:  <a href="/question/{{$val.Id}}">{{$val.CreatedAt}}</a> </span>
+        <span> {{i18n $.Lang "time_written" }}:  <a href="/question/{{$val.Id}}">{{dateformat $val.CreatedAt "2006-02-01 03:04PM"}}</a> </span>
 
         <div class="btn-toolbar" role="group" aria-label="reaction area">
           <a class='reaction-btn {{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-success short-btn'
