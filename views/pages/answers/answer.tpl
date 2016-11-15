@@ -26,7 +26,11 @@
           </p>
 
 
-          <span>{{i18n $.Lang "time_written" }}:  <a href="/answer/{{.Answer.Id}}" class="short-btn read-more-btn">{{dateformat .Answer.CreatedAt "02-01-06 15:04:05"}}</a> </span>
+          <span>{{i18n $.Lang "time_written" }}:
+            <a href="/answer/{{.Answer.Id}}" class="short-btn read-more-btn">
+              {{dateformat .Answer.CreatedAt "02-01-06 15:04 PM"}}
+            </a>
+          </span>
 
 
           <div class="btn-toolbar" role="group" aria-label="reaction area">
@@ -41,28 +45,32 @@
             </a>
             <a class='reaction-btn {{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-danger short-btn'
               href='#' data-rtype="0" data-oid="{{.Answer.Id}}"
-              data-btype="-" data-irt="2"
-              data-myid="{{.Answer.Id}}-dislike-counter"
-              data-opposite="{{.Answer.Id}}-like-counter">
+              data-btype="-" data-irt="2" id="negative-reaction-btn-{{.Answer.Id}}"
+              data-opposite="{{.Answer.Id}}-like-counter"
+              data-myid="{{.Answer.Id}}-dislike-counter">
               <span id="{{.Answer.Id}}-dislike-counter">
                 {{.Answer.HateCount}}
               </span>
               <i class="fa fa-thumbs-down fa-fw" aria-hidden="true"></i>
             </a>
-            <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info short-btn comment-counter-btn' data-parentType="2" data-parentId="{{.Answer.Id}}"
-              data-targetForm="{{.Answer.Id}}-comments-form" data-targetList="{{.Answer.Id}}-comments-list" href='#'>
+            <a id="{{.Answer.Id}}-2-comment-counter-btn"
+              class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info short-btn comment-counter-btn'
+              data-parentType="2"  data-parentId="{{.Answer.Id}}"
+              data-targetForm="{{.Answer.Id}}-comments-form"
+              data-targetList="{{.Answer.Id}}-comments-list" href='#'>
               <span>
                 {{.Answer.CommentCount}}
               </span>
               <i class="fa fa-comments fa-fw" aria-hidden="true"></i>
             </a>
 
-            <a class='{{if neq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info short-btn' style='margin-right:1em;margin-left:1em;' href='/question/{{.Answer.Question.Id}}'>
+            <a class='{{if neq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info short-btn'
+              style='margin-right:1em;margin-left:1em;' href='/question/{{.Answer.Id}}'>
               {{ i18n $.Lang "answer_this"}} <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
             </a>
           </div>
           <div class="comment-wrapper">
-            <div id="{{.Answer.Id}}-comments-form" class="comment-form hidden" data-itemType="1" data-parentId="{{.Answer.Id}}">
+            <div id="{{.Answer.Id}}-comments-form" class="hidden" data-itemType="1" data-parentId="{{.Answer.Id}}">
 
             </div>
             <div id="{{.Answer.Id}}-comments-list" class="comments-list">
