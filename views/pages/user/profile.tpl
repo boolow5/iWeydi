@@ -5,7 +5,7 @@
   <div class="col-sm-7 container profile-container">
     <div class="row">
       <div class="col-sm-4 right-half">
-        <img class="img-responsive" src="/static/img/author.jpg">
+        <img class="img-responsive" src="/static/img/avatar/avatar-258x306.png">
       </div>
       <div class="col-sm-8 left-half">
         <h4>{{.FullName}}</h4>
