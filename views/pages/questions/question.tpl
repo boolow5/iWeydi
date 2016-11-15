@@ -47,18 +47,48 @@
           </p>
 
 
-          <span>{{i18n $.Lang "time_written" }}:  <a href="/answer/{{$val.Id}}" class="short-btn read-more-btn">{{dateformat $val.CreatedAt "02-01-06 15:04:05"}}</a> </span>
+          <span>{{i18n $.Lang "time_written" }}:  <a href="/answer/{{$val.Id}}" class="short-btn read-more-btn">{{dateformat $val.CreatedAt "02-01-06 03:04 PM"}}</a> </span>
 
-          <div class="btn-toolbar" role="group" aria-label="...">
-            <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-success short-btn' href='/question/{{$val.Id}}'>
-              <span>{{$val.LoveCount}} <i class="fa fa-thumbs-up fa-fw" aria-hidden="true"></i></span>
+
+          <div class="btn-toolbar" role="group" aria-label="reaction area">
+            <a class='reaction-btn {{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-success short-btn'
+              href='#' data-rtype="1" data-oid="{{$val.Id}}"
+              data-btype="+" data-irt="1" data-opposite="{{$val.Id}}-dislike-counter"
+              data-myid="{{$val.Id}}-like-counter">
+              <span id="{{$val.Id}}-like-counter">
+                {{$val.LoveCount}}
+              </span>
+              <i class="fa fa-thumbs-up fa-fw" aria-hidden="true"></i>
             </a>
-            <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-danger short-btn' href='/question/{{$val.Id}}'>
-              <span>{{$val.HateCount}} <i class="fa fa-thumbs-down fa-fw" aria-hidden="true"></i></span>
+            <a class='reaction-btn {{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-danger short-btn'
+              href='#' data-rtype="0" data-oid="{{$val.Id}}"
+              data-btype="-" data-irt="1" id="negative-reaction-btn-{{$val.Id}}"
+              data-opposite="{{$val.Id}}-like-counter"
+              data-myid="{{$val.Id}}-dislike-counter">
+              <span id="{{$val.Id}}-dislike-counter">
+                {{$val.HateCount}}
+              </span>
+              <i class="fa fa-thumbs-down fa-fw" aria-hidden="true"></i>
             </a>
-            <a class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info short-btn' href='/question/{{$val.Id}}'>
-              <span>{{$val.CommentCount}} <i class="fa fa-comments fa-fw" aria-hidden="true"></i></span>
+            <a id="{{$val.Id}}-1-comment-counter-btn" class='{{if eq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info short-btn comment-counter-btn'  data-parentType="1"  data-parentId="{{$val.Id}}"
+              data-targetForm="{{$val.Id}}-comments-form" data-targetList="{{$val.Id}}-comments-list" href='#'>
+              <span>
+                {{$val.CommentCount}}
+              </span>
+              <i class="fa fa-comments fa-fw" aria-hidden="true"></i>
             </a>
+
+            <a class='{{if neq $.Lang "ar-SA"}}pull-right {{end}}btn btn-info short-btn' style='margin-right:1em;margin-left:1em;' href='/question/{{$val.Id}}'>
+              {{ i18n $.Lang "answer_this"}} <i class="fa fa-reply fa-fw" aria-hidden="true"></i>
+            </a>
+          </div>
+          <div class="comment-wrapper">
+            <div id="{{$val.Id}}-comments-form" class="hidden" data-itemType="1" data-parentId="{{$val.Id}}">
+
+            </div>
+            <div id="{{$val.Id}}-comments-list" class="comments-list">
+
+            </div>
           </div>
 
 
